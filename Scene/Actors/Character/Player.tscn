@@ -1,11 +1,11 @@
 [gd_scene load_steps=17 format=2]
 
-[ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateBase.gd" type="Script" id=1]
-[ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateMachine.gd" type="Script" id=2]
-[ext_resource path="res://Scene/Character/Sprites/Perso.png" type="Texture" id=3]
-[ext_resource path="res://Scene/Character/Character.gd" type="Script" id=4]
-[ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateLabel.gd" type="Script" id=5]
-[ext_resource path="res://Scene/Character/Sprites/Attack.png" type="Texture" id=6]
+[ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateLabel.gd" type="Script" id=1]
+[ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateBase.gd" type="Script" id=2]
+[ext_resource path="res://Scene/Actors/Character/Player.gd" type="Script" id=3]
+[ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateMachine.gd" type="Script" id=4]
+[ext_resource path="res://Scene/Actors/Character/Sprites/Attack.png" type="Texture" id=5]
+[ext_resource path="res://Scene/Actors/Character/Sprites/Perso.png" type="Texture" id=6]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 3, 6 )
@@ -95,6 +95,10 @@ func enter_state() -> void:
 	var attack_angle = mouse_pos.angle()
 	
 	animated_sprite.set_rotation(attack_angle)
+	
+	for body in $AnimatedSprite/HitBox.get_overlapping_bodies():
+		if body is Enemy:
+			body.hurt()
 
 
 #### LOGIC ####
@@ -114,15 +118,15 @@ func _on_AnimatedSprite_animation_finished() -> void:
 "
 
 [sub_resource type="AtlasTexture" id=5]
-atlas = ExtResource( 6 )
+atlas = ExtResource( 5 )
 region = Rect2( 0, 0, 48, 48 )
 
 [sub_resource type="AtlasTexture" id=6]
-atlas = ExtResource( 6 )
+atlas = ExtResource( 5 )
 region = Rect2( 0, 48, 48, 48 )
 
 [sub_resource type="AtlasTexture" id=7]
-atlas = ExtResource( 6 )
+atlas = ExtResource( 5 )
 region = Rect2( 0, 96, 48, 48 )
 
 [sub_resource type="SpriteFrames" id=8]
@@ -139,11 +143,12 @@ extents = Vector2( 7, 14 )
 [sub_resource type="RectangleShape2D" id=10]
 extents = Vector2( 2.53905, 3.62773 )
 
-[node name="Character" type="KinematicBody2D"]
-script = ExtResource( 4 )
+[node name="Player" type="KinematicBody2D"]
+script = ExtResource( 3 )
+max_hp = 3
 
 [node name="Sprite" type="Sprite" parent="."]
-texture = ExtResource( 3 )
+texture = ExtResource( 6 )
 __meta__ = {
 "_edit_lock_": true
 }
@@ -156,22 +161,22 @@ __meta__ = {
 }
 
 [node name="StatesMachine" type="Node2D" parent="."]
-script = ExtResource( 2 )
+script = ExtResource( 4 )
 
 [node name="Idle" type="Node" parent="StatesMachine"]
-script = ExtResource( 1 )
+script = ExtResource( 2 )
 
 [node name="Move" type="Node" parent="StatesMachine"]
-script = ExtResource( 1 )
+script = ExtResource( 2 )
 
 [node name="Jump" type="Node" parent="StatesMachine"]
-script = ExtResource( 1 )
+script = ExtResource( 2 )
 
 [node name="Fall" type="Node" parent="StatesMachine"]
-script = ExtResource( 1 )
+script = ExtResource( 2 )
 
 [node name="Hurt" type="Node" parent="StatesMachine"]
-script = ExtResource( 1 )
+script = ExtResource( 2 )
 
 [node name="Dash" type="Node" parent="StatesMachine"]
 script = SubResource( 2 )
@@ -196,6 +201,8 @@ animation = "Attack"
 offset = Vector2( 2, 0 )
 
 [node name="HitBox" type="Area2D" parent="StatesMachine/Attack/AnimatedSprite"]
+collision_layer = 0
+collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StatesMachine/Attack/AnimatedSprite/HitBox"]
 position = Vector2( 11.5, 0 )
@@ -206,7 +213,7 @@ margin_left = -20.0409
 margin_top = -27.1842
 margin_right = 19.9591
 margin_bottom = -13.1842
-script = ExtResource( 5 )
+script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -243,7 +250,7 @@ __meta__ = {
 wait_time = 0.4
 one_shot = true
 
-[connection signal="wall_impulse_changed" from="." to="." method="_on_Character_wall_impulse_changed"]
+[connection signal="hp_changed" from="." to="." method="_on_Player_hp_changed"]
 [connection signal="state_changing" from="StatesMachine" to="." method="_on_StatesMachine_state_changing"]
 [connection signal="timeout" from="StatesMachine/Dash/DashDuration" to="." method="_on_DashDuration_timeout"]
 [connection signal="animation_finished" from="StatesMachine/Attack/AnimatedSprite" to="StatesMachine/Attack" method="_on_AnimatedSprite_animation_finished"]

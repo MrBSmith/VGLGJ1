@@ -36,6 +36,8 @@ func _physics_process(delta: float) -> void:
 		if collider is TileMap and collider.name == "Walls":
 			set_state("Collectable")
 		else:
+			if collider.is_class("Enemy"):
+				collider.hurt()
 			set_state("Fall")
 
 
@@ -55,7 +57,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_Area2D_body_entered(body: Node) -> void:
-	if body is Player && is_state("Collectable"):
+	if body.is_class("Player") && is_state("Collectable"):
 		EVENTS.emit_signal("collect_kunai")
 		queue_free()
 

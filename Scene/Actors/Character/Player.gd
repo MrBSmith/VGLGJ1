@@ -1,4 +1,4 @@
-extends KinematicBody2D
+extends Actor
 class_name Player
 
 onready var dash_cooldown = $StatesMachine/Dash/Cooldown
@@ -11,14 +11,10 @@ const DASH_SPEED = 900.0
 var gravity : float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 var direction : int = 0 setget set_direction 
-var velocity := Vector2.ZERO setget set_velocity
 
 var jump_buffered := false
 var jump_tolerence := false
 var wall_impulse := false setget set_wall_impulse
-
-var mx_hp : int = 3
-var hp : int = 3 setget set_hp
 
 var max_nb_kunai := 4
 var nb_kunai : int = max_nb_kunai setget set_nb_kunai
@@ -28,8 +24,8 @@ signal wall_impulse_changed
 
 #### ACCESSORS ####
 
-func is_class(value: String): return value == "Character" or .is_class(value)
-func get_class() -> String: return "Character"
+func is_class(value: String): return value == "Player" or .is_class(value)
+func get_class() -> String: return "Player"
 
 func set_direction(value: int) -> void:
 	if value!= direction:
@@ -41,7 +37,7 @@ func get_state() -> StateBase: return $StatesMachine.get_state()
 func get_state_name() -> String: return $StatesMachine.get_state_name()
 func is_state(value: String) -> bool: return get_state_name() == value
 
-func set_velocity(value: Vector2) -> void: velocity = value
+
 
 func set_wall_impulse(value: bool) -> void:
 	if value != wall_impulse:
@@ -52,11 +48,6 @@ func set_nb_kunai(value: int) -> void:
 	if value != nb_kunai and value >= 0 and value <= max_nb_kunai:
 		nb_kunai = value
 		EVENTS.emit_signal("nb_kunai_changed", nb_kunai)
-
-func set_hp(value: int) -> void:
-	if hp != value:
-		hp = value
-		EVENTS.emit_signal("hp_changed", hp)
 
 
 #### BUILT-IN ####
@@ -146,8 +137,14 @@ func _dash() -> void:
 	var mouse_pos = get_local_mouse_position()
 	var dir = mouse_pos.normalized()
 	
-	set_velocity(dir * DASH_SPEED)
-
+	if is_on_floor():
+		if mouse_pos.x > 0:
+			set_velocity(Vector2.RIGHT * DASH_SPEED)
+		else:
+			set_velocity(Vector2.LEFT * DASH_SPEED)
+	else:
+		set_velocity(dir * DASH_SPEED)
+	
 
 func _attack() -> void:
 	set_state("Attack")
@@ -203,7 +200,7 @@ func _input(event: InputEvent) -> void:
 			_jump()
 	
 	elif Input.is_action_just_pressed("dash"):
-		if _is_dash_available() && direction != 0:
+		if _is_dash_available():
 			_dash()
 	
 	elif event is InputEventMouseButton and Input.is_action_just_pressed("left_click"):
@@ -246,3 +243,7 @@ func _on_StatesMachine_state_changing(from_state, to_state) -> void:
 
 func _on_EVENTS_collect_kunai() -> void:
 	set_nb_kunai(nb_kunai + 1)
+
+
+func _on_Player_hp_changed() -> void:
+	EVENTS.emit_signal("hp_changed", hp)

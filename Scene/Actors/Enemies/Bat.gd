@@ -1,4 +1,4 @@
-extends KinematicBody2D
+extends Enemy
 class_name Bat
 
 onready var wanter_wait_timer = $StatesMachine/Wander/WaitTimer
@@ -7,12 +7,9 @@ onready var attack_cooldown = $StatesMachine/Attack/AttackCooldown
 const SPEED = 150.0
 const DASH_SPEED : float = 600.0
 
-var velocity := Vector2.ZERO
-
 export var wander_distance = 80.0
 export var min_wander_wait_time : float = 1.0
 export var max_wander_wait_time : float = 4.0
-
 
 var path := PoolVector2Array()
 var target : KinematicBody2D = null
@@ -38,7 +35,13 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	if is_state("Attack"):
-		var __ = move_and_collide(velocity * delta)
+		var collision = move_and_collide(velocity * delta)
+		if collision != null:
+			var collider = collision.collider
+			
+			if collider.is_class("Player"):
+				collider.hurt()
+				set_state("Chase")
 	
 	if !path.empty():
 		_move_along_path(delta)
