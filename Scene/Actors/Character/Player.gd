@@ -23,6 +23,7 @@ var nb_kunai : int = max_nb_kunai setget set_nb_kunai
 signal direction_changed
 signal facing_direction_changed
 signal wall_impulse_changed
+signal touch_floor
 
 #### ACCESSORS ####
 
@@ -62,15 +63,18 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if !is_state("Dash"):
-		update_state()
-		_compute_velocity()
-
-		set_velocity(move_and_slide(velocity, Vector2.UP, true, 4, deg2rad(1), false))
+	if is_on_floor() && get_state_name() in ["Fall", "Jump"]:
+		emit_signal("touch_floor")
 	
-	else:
+	if is_state("Dash"):
 		var collision = move_and_collide(velocity * delta)
 		if collision != null:
+			update_state()
+	else:
+		_compute_velocity()
+		set_velocity(move_and_slide(velocity, Vector2.UP, true, 4, deg2rad(1), false))
+		
+		if !is_state("Attack"):
 			update_state()
 
 
@@ -94,7 +98,7 @@ func update_state() -> void:
 			set_state("Move")
 	
 	else:
-		if is_on_wall() && !is_state("Jump"):
+		if is_on_wall() and !is_state("Jump"):
 			var collision = get_slide_collision(0)
 			var col_pos = collision.position
 			var right_wall = col_pos.x > global_position.x
@@ -129,7 +133,7 @@ func _jump() -> void:
 	
 	var wall_dir = get_wall_direction()
 	
-	if wall_dir != 0:
+	if wall_dir != 0 && !is_on_floor():
 		set_direction(-wall_dir)
 		wall_impulse = true
 		$WallImpulseTimer.start()
@@ -149,7 +153,7 @@ func _dash() -> void:
 	else:
 		dir = mouse_pos.normalized()
 	
-	set_facing_direction(sign(dir.x))
+	set_facing_direction(int(sign(dir.x)))
 	set_state("Dash")
 	set_velocity(dir * DASH_SPEED)
 
@@ -230,12 +234,7 @@ func _on_JumpTolerenceTimer_timeout() -> void:
 
 
 func _on_WallImpulseTimer_timeout() -> void:
-	wall_impulse = false
-
-
-func _on_Character_wall_impulse_changed() -> void:
-	if wall_impulse == false:
-		_update_direction()
+	set_wall_impulse(false)
 
 
 func _on_DashDuration_timeout() -> void:
@@ -267,3 +266,12 @@ func _on_Player_direction_changed() -> void:
 
 func _on_Player_facing_direction_changed() -> void:
 	$AnimatedSprite.set_flip_h(facing_direction == -1)
+
+
+func _on_Player_touch_floor() -> void:
+	set_wall_impulse(false)
+	_update_direction()
+
+
+func _on_Player_wall_impulse_changed() -> void:
+	_update_direction()

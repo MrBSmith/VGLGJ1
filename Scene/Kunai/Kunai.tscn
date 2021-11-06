@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://Scene/Kunai/Kunai.png" type="Texture" id=1]
+[ext_resource path="res://Scene/Kunai/KunaiProjectile.png" type="Texture" id=1]
 [ext_resource path="res://Scene/Kunai/Kunai.gd" type="Script" id=2]
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateMachine.gd" type="Script" id=3]
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateBase.gd" type="Script" id=4]

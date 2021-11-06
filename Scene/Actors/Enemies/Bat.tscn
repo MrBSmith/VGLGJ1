@@ -67,8 +67,13 @@ func enter_state() -> void:
 
 
 func exit_state() -> void:
+	if owner == null:
+		return
+	
 	$AttackCooldown.start(rand_range(min_cooldown, max_cooldown))
 	owner.set_collision_mask(0)
+
+
 
 #### INPUTS ####
 

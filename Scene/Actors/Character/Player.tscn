@@ -140,7 +140,7 @@ animations = [ {
 "frames": [ SubResource( 19 ) ],
 "loop": true,
 "name": "Attack",
-"speed": 5.0
+"speed": 2.0
 }, {
 "frames": [ SubResource( 20 ) ],
 "loop": true,
@@ -295,6 +295,7 @@ func enter_state() -> void:
 	var mouse_pos = owner.get_local_mouse_position()
 	var attack_angle = mouse_pos.angle()
 	
+	owner.set_facing_direction(sign(mouse_pos.x))
 	attack_animated_sprite.set_rotation(attack_angle)
 	
 	for body in $AnimatedSprite/HitBox.get_overlapping_bodies():
@@ -405,6 +406,7 @@ script = SubResource( 25 )
 
 [node name="Attack" type="Node2D" parent="StatesMachine"]
 script = SubResource( 26 )
+toggle_state_mode = true
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="StatesMachine/Attack"]
 visible = false
@@ -421,7 +423,6 @@ position = Vector2( 13, 0 )
 shape = SubResource( 31 )
 
 [node name="StateLabel" type="Label" parent="StatesMachine"]
-visible = false
 margin_left = -20.0409
 margin_top = -27.1842
 margin_right = 19.9591
@@ -466,6 +467,8 @@ one_shot = true
 [connection signal="direction_changed" from="." to="." method="_on_Player_direction_changed"]
 [connection signal="facing_direction_changed" from="." to="." method="_on_Player_facing_direction_changed"]
 [connection signal="hp_changed" from="." to="." method="_on_Player_hp_changed"]
+[connection signal="touch_floor" from="." to="." method="_on_Player_touch_floor"]
+[connection signal="wall_impulse_changed" from="." to="." method="_on_Player_wall_impulse_changed"]
 [connection signal="animation_finished" from="AnimatedSprite" to="StatesMachine/Idle" method="_on_AnimatedSprite_animation_finished"]
 [connection signal="animation_finished" from="AnimatedSprite" to="StatesMachine/Move" method="_on_AnimatedSprite_animation_finished"]
 [connection signal="state_changing" from="StatesMachine" to="." method="_on_StatesMachine_state_changing"]
