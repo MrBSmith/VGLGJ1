@@ -6,11 +6,12 @@ onready var dash_cooldown = $StatesMachine/Dash/Cooldown
 const SPEED : float = 280.0
 const JUMP_FORCE : float = 450.0
 const WALL_GRAB_FALL_SPEED = 40.0
-const DASH_SPEED = 900.0
+const DASH_SPEED = 700.0
 
 var gravity : float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 var direction : int = 0 setget set_direction 
+var facing_direction : int = 0 setget set_facing_direction
 
 var jump_buffered := false
 var jump_tolerence := false
@@ -20,6 +21,7 @@ var max_nb_kunai := 4
 var nb_kunai : int = max_nb_kunai setget set_nb_kunai
 
 signal direction_changed
+signal facing_direction_changed
 signal wall_impulse_changed
 
 #### ACCESSORS ####
@@ -32,12 +34,15 @@ func set_direction(value: int) -> void:
 		direction = value
 		emit_signal("direction_changed")
 
+func set_facing_direction(value: int) -> void: 
+	if value != facing_direction:
+		facing_direction = value
+		emit_signal("facing_direction_changed")
+
 func set_state(state_name: String) -> void:$StatesMachine.set_state(state_name)
 func get_state() -> StateBase: return $StatesMachine.get_state()
 func get_state_name() -> String: return $StatesMachine.get_state_name()
 func is_state(value: String) -> bool: return get_state_name() == value
-
-
 
 func set_wall_impulse(value: bool) -> void:
 	if value != wall_impulse:
@@ -123,8 +128,9 @@ func _jump() -> void:
 	jump_buffered = false
 	
 	var wall_dir = get_wall_direction()
+	
 	if wall_dir != 0:
-		direction = -wall_dir
+		set_direction(-wall_dir)
 		wall_impulse = true
 		$WallImpulseTimer.start()
 	
@@ -133,18 +139,20 @@ func _jump() -> void:
 
 func _dash() -> void:
 	set_state("Dash")
-	
+	var dir := Vector2.ZERO
 	var mouse_pos = get_local_mouse_position()
-	var dir = mouse_pos.normalized()
 	
 	if is_on_floor():
 		if mouse_pos.x > 0:
-			set_velocity(Vector2.RIGHT * DASH_SPEED)
+			dir = Vector2.RIGHT
 		else:
-			set_velocity(Vector2.LEFT * DASH_SPEED)
+			dir = Vector2.LEFT
 	else:
-		set_velocity(dir * DASH_SPEED)
+		dir = mouse_pos.normalized()
 	
+	set_facing_direction(sign(dir.x))
+	set_velocity(dir * DASH_SPEED)
+
 
 func _attack() -> void:
 	set_state("Attack")
@@ -209,6 +217,7 @@ func _input(event: InputEvent) -> void:
 	elif event is InputEventMouseButton and Input.is_action_just_pressed("right_click"):
 		_throw_kunai()
 
+
 #### SIGNAL RESPONSES ####
 
 
@@ -247,3 +256,14 @@ func _on_EVENTS_collect_kunai() -> void:
 
 func _on_Player_hp_changed() -> void:
 	EVENTS.emit_signal("hp_changed", hp)
+
+
+func _on_Player_direction_changed() -> void:
+	if direction == 0:
+		return
+	else:
+		set_facing_direction(direction)
+
+
+func _on_Player_facing_direction_changed() -> void:
+	$AnimatedSprite.set_flip_h(facing_direction == -1)

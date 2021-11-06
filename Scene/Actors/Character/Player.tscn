@@ -1,17 +1,156 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=40 format=2]
 
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateLabel.gd" type="Script" id=1]
-[ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateBase.gd" type="Script" id=2]
+[ext_resource path="res://BabaGodotLib/Absract/StateMachine/AbstractStates/AnimatedObjectStateBase.gd" type="Script" id=2]
 [ext_resource path="res://Scene/Actors/Character/Player.gd" type="Script" id=3]
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateMachine.gd" type="Script" id=4]
 [ext_resource path="res://Scene/Actors/Character/Sprites/Attack.png" type="Texture" id=5]
-[ext_resource path="res://Scene/Actors/Character/Sprites/Perso.png" type="Texture" id=6]
+[ext_resource path="res://Scene/Actors/Character/Sprites/Perso_SpriteSheet.png" type="Texture" id=6]
+[ext_resource path="res://Scene/Actors/Character/Idle.gd" type="Script" id=7]
+
+[sub_resource type="AtlasTexture" id=17]
+atlas = ExtResource( 6 )
+region = Rect2( 0, 16, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=23]
+atlas = ExtResource( 6 )
+region = Rect2( 0, 48, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=21]
+atlas = ExtResource( 6 )
+region = Rect2( 64, 16, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=22]
+atlas = ExtResource( 6 )
+region = Rect2( 0, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=16]
+atlas = ExtResource( 6 )
+region = Rect2( 64, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=13]
+atlas = ExtResource( 6 )
+region = Rect2( 16, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=14]
+atlas = ExtResource( 6 )
+region = Rect2( 32, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=15]
+atlas = ExtResource( 6 )
+region = Rect2( 48, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=11]
+atlas = ExtResource( 6 )
+region = Rect2( 0, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=20]
+atlas = ExtResource( 6 )
+region = Rect2( 16, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=24]
+atlas = ExtResource( 6 )
+region = Rect2( 16, 48, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=25]
+atlas = ExtResource( 6 )
+region = Rect2( 16, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=26]
+atlas = ExtResource( 6 )
+region = Rect2( 32, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=27]
+atlas = ExtResource( 6 )
+region = Rect2( 48, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=28]
+atlas = ExtResource( 6 )
+region = Rect2( 64, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=18]
+atlas = ExtResource( 6 )
+region = Rect2( 16, 16, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=19]
+atlas = ExtResource( 6 )
+region = Rect2( 32, 16, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=29]
+atlas = ExtResource( 6 )
+region = Rect2( 32, 48, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=30]
+atlas = ExtResource( 6 )
+region = Rect2( 48, 48, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=31]
+atlas = ExtResource( 6 )
+region = Rect2( 64, 48, 16, 16 )
+
+[sub_resource type="SpriteFrames" id=12]
+animations = [ {
+"frames": [ SubResource( 17 ) ],
+"loop": true,
+"name": "Fall",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 23 ) ],
+"loop": true,
+"name": "WallGrab",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 21 ), SubResource( 22 ) ],
+"loop": true,
+"name": "Hurt",
+"speed": 13.0
+}, {
+"frames": [ SubResource( 16 ) ],
+"loop": true,
+"name": "Jump",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 13 ), SubResource( 14 ), SubResource( 15 ), SubResource( 14 ) ],
+"loop": true,
+"name": "Move",
+"speed": 13.0
+}, {
+"frames": [ SubResource( 11 ) ],
+"loop": true,
+"name": "Idle",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 20 ) ],
+"loop": true,
+"name": "Dash",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 24 ) ],
+"loop": true,
+"name": "Attack",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 25 ), SubResource( 26 ), SubResource( 27 ), SubResource( 28 ) ],
+"loop": true,
+"name": "Die",
+"speed": 13.0
+}, {
+"frames": [ SubResource( 18 ), SubResource( 19 ) ],
+"loop": true,
+"name": "Roll",
+"speed": 13.0
+}, {
+"frames": [ SubResource( 29 ), SubResource( 30 ), SubResource( 31 ) ],
+"loop": true,
+"name": "Land",
+"speed": 20.0
+} ]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 3, 6 )
 
-[sub_resource type="GDScript" id=2]
-script/source = "extends StateBase
+[sub_resource type="GDScript" id=32]
+script/source = "extends AnimatedObjectStateBase
 
 #### ACCESSORS ####
 
@@ -23,9 +162,45 @@ script/source = "extends StateBase
 #### VIRTUALS ####
 
 func enter_state() -> void:
+	if states_machine.previous_state != null and states_machine.previous_state.name == \"Fall\":
+		animated_sprite.play(\"Roll\")
+	else:
+		.enter_state()
+
+
+#### LOGIC ####
+
+
+
+#### INPUTS ####
+
+
+
+#### SIGNAL RESPONSES ####
+
+func _on_AnimatedSprite_animation_finished() -> void:
+	if animated_sprite.get_animation() == \"Roll\":
+		.enter_state()
+"
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends AnimatedObjectStateBase
+
+#### ACCESSORS ####
+
+
+#### BUILT-IN ####
+
+
+
+#### VIRTUALS ####
+
+func enter_state() -> void:
+	.enter_state()
 	$DashDuration.start()
 
 func exit_state() -> void:
+	.exit_state()
 	$Cooldown.start()
 
 
@@ -41,7 +216,7 @@ func exit_state() -> void:
 "
 
 [sub_resource type="GDScript" id=3]
-script/source = "extends StateBase
+script/source = "extends AnimatedObjectStateBase
 
 #### ACCESSORS ####
 
@@ -55,9 +230,11 @@ func _ready() -> void:
 #### VIRTUALS ####
 
 func enter_state() -> void:
+	.enter_state()
 	owner.velocity.y = 0
 
 func exit_state() -> void:
+	.exit_state()
 	owner.trigger_jump_tolerence()
 
 #### LOGIC ####
@@ -72,9 +249,9 @@ func exit_state() -> void:
 "
 
 [sub_resource type="GDScript" id=4]
-script/source = "extends StateBase
+script/source = "extends AnimatedObjectStateBase
 
-onready var animated_sprite = $AnimatedSprite
+onready var attack_animated_sprite = $AnimatedSprite
 
 #### ACCESSORS ####
 
@@ -87,14 +264,16 @@ onready var animated_sprite = $AnimatedSprite
 #### VIRTUALS ####
 
 func enter_state() -> void:
-	animated_sprite.set_frame(0)
-	animated_sprite.set_visible(true)
-	animated_sprite.play()
+	.enter_state()
+	
+	attack_animated_sprite.set_frame(0)
+	attack_animated_sprite.set_visible(true)
+	attack_animated_sprite.play()
 	
 	var mouse_pos = owner.get_local_mouse_position()
 	var attack_angle = mouse_pos.angle()
 	
-	animated_sprite.set_rotation(attack_angle)
+	attack_animated_sprite.set_rotation(attack_angle)
 	
 	for body in $AnimatedSprite/HitBox.get_overlapping_bodies():
 		if body is Enemy:
@@ -113,7 +292,7 @@ func enter_state() -> void:
 
 
 func _on_AnimatedSprite_animation_finished() -> void:
-	animated_sprite.set_visible(false)
+	attack_animated_sprite.set_visible(false)
 	owner.update_state()
 "
 
@@ -138,7 +317,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=9]
-extents = Vector2( 7, 14 )
+extents = Vector2( 11.5, 14 )
 
 [sub_resource type="RectangleShape2D" id=10]
 extents = Vector2( 2.53905, 3.62773 )
@@ -147,8 +326,9 @@ extents = Vector2( 2.53905, 3.62773 )
 script = ExtResource( 3 )
 max_hp = 3
 
-[node name="Sprite" type="Sprite" parent="."]
-texture = ExtResource( 6 )
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 12 )
+animation = "Land"
 __meta__ = {
 "_edit_lock_": true
 }
@@ -164,10 +344,10 @@ __meta__ = {
 script = ExtResource( 4 )
 
 [node name="Idle" type="Node" parent="StatesMachine"]
-script = ExtResource( 2 )
+script = ExtResource( 7 )
 
 [node name="Move" type="Node" parent="StatesMachine"]
-script = ExtResource( 2 )
+script = SubResource( 32 )
 
 [node name="Jump" type="Node" parent="StatesMachine"]
 script = ExtResource( 2 )
@@ -196,6 +376,7 @@ script = SubResource( 4 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="StatesMachine/Attack"]
 visible = false
+position = Vector2( 4, 1 )
 frames = SubResource( 8 )
 animation = "Attack"
 offset = Vector2( 2, 0 )
@@ -205,10 +386,11 @@ collision_layer = 0
 collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StatesMachine/Attack/AnimatedSprite/HitBox"]
-position = Vector2( 11.5, 0 )
+position = Vector2( 8.375, 0 )
 shape = SubResource( 9 )
 
 [node name="StateLabel" type="Label" parent="StatesMachine"]
+visible = false
 margin_left = -20.0409
 margin_top = -27.1842
 margin_right = 19.9591
@@ -250,7 +432,11 @@ __meta__ = {
 wait_time = 0.4
 one_shot = true
 
+[connection signal="direction_changed" from="." to="." method="_on_Player_direction_changed"]
+[connection signal="facing_direction_changed" from="." to="." method="_on_Player_facing_direction_changed"]
 [connection signal="hp_changed" from="." to="." method="_on_Player_hp_changed"]
+[connection signal="animation_finished" from="AnimatedSprite" to="StatesMachine/Idle" method="_on_AnimatedSprite_animation_finished"]
+[connection signal="animation_finished" from="AnimatedSprite" to="StatesMachine/Move" method="_on_AnimatedSprite_animation_finished"]
 [connection signal="state_changing" from="StatesMachine" to="." method="_on_StatesMachine_state_changing"]
 [connection signal="timeout" from="StatesMachine/Dash/DashDuration" to="." method="_on_DashDuration_timeout"]
 [connection signal="animation_finished" from="StatesMachine/Attack/AnimatedSprite" to="StatesMachine/Attack" method="_on_AnimatedSprite_animation_finished"]
