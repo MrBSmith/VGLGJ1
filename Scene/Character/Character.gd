@@ -1,13 +1,14 @@
 extends KinematicBody2D
-class_name Character
+class_name Player
 
 onready var dash_cooldown = $StatesMachine/Dash/Cooldown
 
 const SPEED : float = 280.0
-const GRAVITY : float = 20.0
 const JUMP_FORCE : float = 450.0
 const WALL_GRAB_FALL_SPEED = 40.0
-const DASH_SPEED = 600.0
+const DASH_SPEED = 700.0
+
+var gravity : float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 var direction : int = 0 setget set_direction 
 var velocity := Vector2.ZERO setget set_velocity
@@ -89,7 +90,7 @@ func update_state() -> void:
 
 
 func _compute_velocity() -> void:
-	var y_vel = WALL_GRAB_FALL_SPEED if get_state_name() == "WallGrab" else velocity.y + GRAVITY
+	var y_vel = WALL_GRAB_FALL_SPEED if get_state_name() == "WallGrab" else velocity.y + gravity
 	set_velocity(Vector2(direction * SPEED, y_vel))
 
 
@@ -125,6 +126,12 @@ func _dash() -> void:
 func _attack() -> void:
 	set_state("Attack")
 
+
+func _throw_kunai() -> void:
+	var mouse_pos = get_local_mouse_position()
+	EVENTS.emit_signal("spawn_kunai", position, mouse_pos.normalized())
+
+
 func is_near_wall() -> bool:
 	for area in $WallDetection.get_children():
 		for body in area.get_overlapping_bodies():
@@ -154,7 +161,7 @@ func _is_dash_available() -> bool:
 
 #### INPUTS ####
 
-func _input(_event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if !wall_impulse:
 		_update_direction()
 	
@@ -166,11 +173,14 @@ func _input(_event: InputEvent) -> void:
 			_jump()
 	
 	elif Input.is_action_just_pressed("dash"):
-		if _is_dash_available():
+		if _is_dash_available() && direction != 0:
 			_dash()
 	
-	elif Input.is_action_just_pressed("left_click"):
+	elif event is InputEventMouseButton and Input.is_action_just_pressed("left_click"):
 		_attack()
+	
+	elif event is InputEventMouseButton and Input.is_action_just_pressed("right_click"):
+		_throw_kunai()
 
 #### SIGNAL RESPONSES ####
 
