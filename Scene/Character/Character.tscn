@@ -243,7 +243,6 @@ __meta__ = {
 wait_time = 0.4
 one_shot = true
 
-[connection signal="direction_changed" from="." to="." method="_on_Character_direction_changed"]
 [connection signal="wall_impulse_changed" from="." to="." method="_on_Character_wall_impulse_changed"]
 [connection signal="state_changing" from="StatesMachine" to="." method="_on_StatesMachine_state_changing"]
 [connection signal="timeout" from="StatesMachine/Dash/DashDuration" to="." method="_on_DashDuration_timeout"]

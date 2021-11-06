@@ -36,8 +36,7 @@ func set_direction(value: int) -> void:
 		direction = value
 		emit_signal("direction_changed")
 
-func set_state(state_name: String) -> void:
-	$StatesMachine.set_state(state_name)
+func set_state(state_name: String) -> void:$StatesMachine.set_state(state_name)
 func get_state() -> StateBase: return $StatesMachine.get_state()
 func get_state_name() -> String: return $StatesMachine.get_state_name()
 func is_state(value: String) -> bool: return get_state_name() == value
@@ -74,8 +73,9 @@ func _physics_process(delta: float) -> void:
 		set_velocity(move_and_slide(velocity, Vector2.UP, true, 4, deg2rad(1), false))
 	
 	else:
-		move_and_collide(velocity * delta)
-
+		var collision = move_and_collide(velocity * delta)
+		if collision != null:
+			update_state()
 
 
 #### VIRTUALS ####
@@ -213,13 +213,6 @@ func _input(event: InputEvent) -> void:
 		_throw_kunai()
 
 #### SIGNAL RESPONSES ####
-
-
-func _on_Character_direction_changed() -> void:
-	if direction == 0:
-		set_state("Idle")
-	else:
-		set_state("Move")
 
 
 func _on_JumpBufferTimer_timeout() -> void:

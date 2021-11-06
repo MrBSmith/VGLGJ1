@@ -94,6 +94,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://BabaGodotLib/UI/Sliders/Baba_HSlider.gd"
 }, {
+"base": "KinematicBody2D",
+"class": "Bat",
+"language": "GDScript",
+"path": "res://Scene/Enemies/Bat.gd"
+}, {
 "base": "InteractiveObject",
 "class": "Collectable",
 "language": "GDScript",
@@ -547,6 +552,7 @@ _global_script_class_icons={
 "BabaTabContainer": "",
 "BabaTween": "",
 "Baba_HSlider": "",
+"Bat": "",
 "Collectable": "",
 "Collectable_CollectState": "",
 "Collectable_FollowState": "",
@@ -645,6 +651,7 @@ config/icon="res://icon.png"
 [autoload]
 
 EVENTS="*res://Autoload/EVENTS.gd"
+GAME="*res://Autoload/GAME.gd"
 
 [display]
 
