@@ -115,6 +115,9 @@ script = ExtResource( 3 )
 [node name="ChasePathUpdateTimer" type="Timer" parent="StatesMachine/Chase"]
 wait_time = 0.05
 
+[node name="Hurt" type="Node" parent="StatesMachine"]
+script = ExtResource( 3 )
+
 [node name="Attack" type="Node" parent="StatesMachine"]
 script = SubResource( 3 )
 
@@ -136,6 +139,7 @@ __meta__ = {
 }
 
 [node name="AggroArea" type="Area2D" parent="."]
+visible = false
 __meta__ = {
 "_edit_lock_": true
 }
@@ -147,6 +151,7 @@ __meta__ = {
 }
 
 [node name="AttackArea" type="Area2D" parent="."]
+visible = false
 __meta__ = {
 "_edit_lock_": true
 }
@@ -158,6 +163,7 @@ __meta__ = {
 }
 
 [node name="ViewFieldArea" type="Area2D" parent="."]
+visible = false
 __meta__ = {
 "_edit_lock_": true
 }

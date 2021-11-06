@@ -138,7 +138,6 @@ func _jump() -> void:
 
 
 func _dash() -> void:
-	set_state("Dash")
 	var dir := Vector2.ZERO
 	var mouse_pos = get_local_mouse_position()
 	
@@ -151,6 +150,7 @@ func _dash() -> void:
 		dir = mouse_pos.normalized()
 	
 	set_facing_direction(sign(dir.x))
+	set_state("Dash")
 	set_velocity(dir * DASH_SPEED)
 
 

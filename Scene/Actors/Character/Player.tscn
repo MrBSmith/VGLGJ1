@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=2]
+[gd_scene load_steps=45 format=2]
 
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateLabel.gd" type="Script" id=1]
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/AbstractStates/AnimatedObjectStateBase.gd" type="Script" id=2]
@@ -7,149 +7,151 @@
 [ext_resource path="res://Scene/Actors/Character/Sprites/Attack.png" type="Texture" id=5]
 [ext_resource path="res://Scene/Actors/Character/Sprites/Perso_SpriteSheet.png" type="Texture" id=6]
 [ext_resource path="res://Scene/Actors/Character/Idle.gd" type="Script" id=7]
+[ext_resource path="res://Scene/Actors/Character/Sprites/Perso_Dash.png" type="Texture" id=8]
+[ext_resource path="res://Scene/Actors/Character/Sprites/Perso_Dash_Left.png" type="Texture" id=9]
 
-[sub_resource type="AtlasTexture" id=17]
+[sub_resource type="AtlasTexture" id=1]
+atlas = ExtResource( 6 )
+region = Rect2( 16, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 6 )
+region = Rect2( 32, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=3]
+atlas = ExtResource( 6 )
+region = Rect2( 48, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=4]
+atlas = ExtResource( 6 )
+region = Rect2( 0, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=5]
 atlas = ExtResource( 6 )
 region = Rect2( 0, 16, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=23]
+[sub_resource type="AtlasTexture" id=6]
 atlas = ExtResource( 6 )
 region = Rect2( 0, 48, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=21]
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 6 )
+region = Rect2( 16, 16, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 6 )
+region = Rect2( 32, 16, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=9]
+atlas = ExtResource( 6 )
+region = Rect2( 64, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=10]
+atlas = ExtResource( 6 )
+region = Rect2( 16, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=11]
+atlas = ExtResource( 6 )
+region = Rect2( 32, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=12]
+atlas = ExtResource( 6 )
+region = Rect2( 48, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=13]
+atlas = ExtResource( 6 )
+region = Rect2( 64, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=14]
 atlas = ExtResource( 6 )
 region = Rect2( 64, 16, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=22]
+[sub_resource type="AtlasTexture" id=15]
 atlas = ExtResource( 6 )
 region = Rect2( 0, 32, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=16]
 atlas = ExtResource( 6 )
-region = Rect2( 64, 0, 16, 16 )
+region = Rect2( 32, 48, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=13]
+[sub_resource type="AtlasTexture" id=17]
 atlas = ExtResource( 6 )
-region = Rect2( 16, 0, 16, 16 )
+region = Rect2( 48, 48, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=14]
+[sub_resource type="AtlasTexture" id=18]
 atlas = ExtResource( 6 )
-region = Rect2( 32, 0, 16, 16 )
+region = Rect2( 64, 48, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=15]
+[sub_resource type="AtlasTexture" id=19]
 atlas = ExtResource( 6 )
-region = Rect2( 48, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=11]
-atlas = ExtResource( 6 )
-region = Rect2( 0, 0, 16, 16 )
+region = Rect2( 16, 48, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=20]
 atlas = ExtResource( 6 )
 region = Rect2( 16, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=24]
-atlas = ExtResource( 6 )
-region = Rect2( 16, 48, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=25]
-atlas = ExtResource( 6 )
-region = Rect2( 16, 32, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=26]
-atlas = ExtResource( 6 )
-region = Rect2( 32, 32, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=27]
-atlas = ExtResource( 6 )
-region = Rect2( 48, 32, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=28]
-atlas = ExtResource( 6 )
-region = Rect2( 64, 32, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=18]
-atlas = ExtResource( 6 )
-region = Rect2( 16, 16, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=19]
-atlas = ExtResource( 6 )
-region = Rect2( 32, 16, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=29]
-atlas = ExtResource( 6 )
-region = Rect2( 32, 48, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=30]
-atlas = ExtResource( 6 )
-region = Rect2( 48, 48, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=31]
-atlas = ExtResource( 6 )
-region = Rect2( 64, 48, 16, 16 )
-
-[sub_resource type="SpriteFrames" id=12]
+[sub_resource type="SpriteFrames" id=21]
 animations = [ {
-"frames": [ SubResource( 17 ) ],
-"loop": true,
-"name": "Fall",
-"speed": 5.0
-}, {
-"frames": [ SubResource( 23 ) ],
-"loop": true,
-"name": "WallGrab",
-"speed": 5.0
-}, {
-"frames": [ SubResource( 21 ), SubResource( 22 ) ],
-"loop": true,
-"name": "Hurt",
-"speed": 13.0
-}, {
-"frames": [ SubResource( 16 ) ],
-"loop": true,
-"name": "Jump",
-"speed": 5.0
-}, {
-"frames": [ SubResource( 13 ), SubResource( 14 ), SubResource( 15 ), SubResource( 14 ) ],
+"frames": [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 2 ) ],
 "loop": true,
 "name": "Move",
 "speed": 13.0
 }, {
-"frames": [ SubResource( 11 ) ],
+"frames": [ SubResource( 4 ) ],
 "loop": true,
 "name": "Idle",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 5 ) ],
+"loop": true,
+"name": "Fall",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 6 ) ],
+"loop": true,
+"name": "WallGrab",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 7 ), SubResource( 8 ) ],
+"loop": true,
+"name": "Roll",
+"speed": 13.0
+}, {
+"frames": [ SubResource( 9 ) ],
+"loop": true,
+"name": "Jump",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 10 ), SubResource( 11 ), SubResource( 12 ), SubResource( 13 ) ],
+"loop": true,
+"name": "Die",
+"speed": 13.0
+}, {
+"frames": [ SubResource( 14 ), SubResource( 15 ) ],
+"loop": true,
+"name": "Hurt",
+"speed": 13.0
+}, {
+"frames": [ SubResource( 16 ), SubResource( 17 ), SubResource( 18 ) ],
+"loop": true,
+"name": "Land",
+"speed": 20.0
+}, {
+"frames": [ SubResource( 19 ) ],
+"loop": true,
+"name": "Attack",
 "speed": 5.0
 }, {
 "frames": [ SubResource( 20 ) ],
 "loop": true,
 "name": "Dash",
 "speed": 5.0
-}, {
-"frames": [ SubResource( 24 ) ],
-"loop": true,
-"name": "Attack",
-"speed": 5.0
-}, {
-"frames": [ SubResource( 25 ), SubResource( 26 ), SubResource( 27 ), SubResource( 28 ) ],
-"loop": true,
-"name": "Die",
-"speed": 13.0
-}, {
-"frames": [ SubResource( 18 ), SubResource( 19 ) ],
-"loop": true,
-"name": "Roll",
-"speed": 13.0
-}, {
-"frames": [ SubResource( 29 ), SubResource( 30 ), SubResource( 31 ) ],
-"loop": true,
-"name": "Land",
-"speed": 20.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=1]
+[sub_resource type="RectangleShape2D" id=22]
 extents = Vector2( 3, 6 )
 
-[sub_resource type="GDScript" id=32]
+[sub_resource type="GDScript" id=23]
 script/source = "extends AnimatedObjectStateBase
 
 #### ACCESSORS ####
@@ -183,8 +185,11 @@ func _on_AnimatedSprite_animation_finished() -> void:
 		.enter_state()
 "
 
-[sub_resource type="GDScript" id=2]
+[sub_resource type="GDScript" id=24]
 script/source = "extends AnimatedObjectStateBase
+
+export var right_particule : Texture = null
+export var left_particule : Texture = null
 
 #### ACCESSORS ####
 
@@ -197,6 +202,9 @@ script/source = "extends AnimatedObjectStateBase
 
 func enter_state() -> void:
 	.enter_state()
+	var texture = right_particule if owner.facing_direction == 1 else left_particule
+	$Particles2D.set_texture(texture)
+	$Particles2D.set_emitting(true)
 	$DashDuration.start()
 
 func exit_state() -> void:
@@ -215,7 +223,21 @@ func exit_state() -> void:
 #### SIGNAL RESPONSES ####
 "
 
-[sub_resource type="GDScript" id=3]
+[sub_resource type="Gradient" id=34]
+offsets = PoolRealArray( 0, 0.379464, 0.790179, 1 )
+colors = PoolColorArray( 1, 1, 1, 0.733333, 0, 0.623529, 1, 0.498039, 0, 0.623529, 1, 0.266667, 0, 0.623529, 1, 0 )
+
+[sub_resource type="GradientTexture" id=35]
+gradient = SubResource( 34 )
+
+[sub_resource type="ParticlesMaterial" id=36]
+flag_disable_z = true
+gravity = Vector3( 0, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+color_ramp = SubResource( 35 )
+
+[sub_resource type="GDScript" id=25]
 script/source = "extends AnimatedObjectStateBase
 
 #### ACCESSORS ####
@@ -248,7 +270,7 @@ func exit_state() -> void:
 #### SIGNAL RESPONSES ####
 "
 
-[sub_resource type="GDScript" id=4]
+[sub_resource type="GDScript" id=26]
 script/source = "extends AnimatedObjectStateBase
 
 onready var attack_animated_sprite = $AnimatedSprite
@@ -296,30 +318,30 @@ func _on_AnimatedSprite_animation_finished() -> void:
 	owner.update_state()
 "
 
-[sub_resource type="AtlasTexture" id=5]
+[sub_resource type="AtlasTexture" id=27]
 atlas = ExtResource( 5 )
 region = Rect2( 0, 0, 48, 48 )
 
-[sub_resource type="AtlasTexture" id=6]
+[sub_resource type="AtlasTexture" id=28]
 atlas = ExtResource( 5 )
 region = Rect2( 0, 48, 48, 48 )
 
-[sub_resource type="AtlasTexture" id=7]
+[sub_resource type="AtlasTexture" id=29]
 atlas = ExtResource( 5 )
 region = Rect2( 0, 96, 48, 48 )
 
-[sub_resource type="SpriteFrames" id=8]
+[sub_resource type="SpriteFrames" id=30]
 animations = [ {
-"frames": [ SubResource( 5 ), SubResource( 6 ), SubResource( 7 ) ],
+"frames": [ SubResource( 27 ), SubResource( 28 ), SubResource( 29 ) ],
 "loop": false,
 "name": "Attack",
 "speed": 18.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=9]
+[sub_resource type="RectangleShape2D" id=31]
 extents = Vector2( 11.5, 14 )
 
-[sub_resource type="RectangleShape2D" id=10]
+[sub_resource type="RectangleShape2D" id=32]
 extents = Vector2( 2.53905, 3.62773 )
 
 [node name="Player" type="KinematicBody2D"]
@@ -327,15 +349,15 @@ script = ExtResource( 3 )
 max_hp = 3
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
-frames = SubResource( 12 )
-animation = "Land"
+frames = SubResource( 21 )
+animation = "Idle"
 __meta__ = {
 "_edit_lock_": true
 }
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, 2 )
-shape = SubResource( 1 )
+shape = SubResource( 22 )
 __meta__ = {
 "_edit_lock_": true
 }
@@ -347,7 +369,7 @@ script = ExtResource( 4 )
 script = ExtResource( 7 )
 
 [node name="Move" type="Node" parent="StatesMachine"]
-script = SubResource( 32 )
+script = SubResource( 23 )
 
 [node name="Jump" type="Node" parent="StatesMachine"]
 script = ExtResource( 2 )
@@ -358,8 +380,10 @@ script = ExtResource( 2 )
 [node name="Hurt" type="Node" parent="StatesMachine"]
 script = ExtResource( 2 )
 
-[node name="Dash" type="Node" parent="StatesMachine"]
-script = SubResource( 2 )
+[node name="Dash" type="Node2D" parent="StatesMachine"]
+script = SubResource( 24 )
+right_particule = ExtResource( 8 )
+left_particule = ExtResource( 9 )
 
 [node name="DashDuration" type="Timer" parent="StatesMachine/Dash"]
 wait_time = 0.18
@@ -368,26 +392,33 @@ one_shot = true
 [node name="Cooldown" type="Timer" parent="StatesMachine/Dash"]
 one_shot = true
 
+[node name="Particles2D" type="Particles2D" parent="StatesMachine/Dash"]
+emitting = false
+lifetime = 0.18
+one_shot = true
+local_coords = false
+process_material = SubResource( 36 )
+texture = ExtResource( 8 )
+
 [node name="WallGrab" type="Node" parent="StatesMachine"]
-script = SubResource( 3 )
+script = SubResource( 25 )
 
 [node name="Attack" type="Node2D" parent="StatesMachine"]
-script = SubResource( 4 )
+script = SubResource( 26 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="StatesMachine/Attack"]
 visible = false
-position = Vector2( 4, 1 )
-frames = SubResource( 8 )
+frames = SubResource( 30 )
 animation = "Attack"
-offset = Vector2( 2, 0 )
+offset = Vector2( 6, 0 )
 
 [node name="HitBox" type="Area2D" parent="StatesMachine/Attack/AnimatedSprite"]
 collision_layer = 0
 collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StatesMachine/Attack/AnimatedSprite/HitBox"]
-position = Vector2( 8.375, 0 )
-shape = SubResource( 9 )
+position = Vector2( 13, 0 )
+shape = SubResource( 31 )
 
 [node name="StateLabel" type="Label" parent="StatesMachine"]
 visible = false
@@ -414,7 +445,7 @@ position = Vector2( -4.5, 0 )
 [node name="Left" type="Area2D" parent="WallDetection"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WallDetection/Left"]
-shape = SubResource( 10 )
+shape = SubResource( 32 )
 __meta__ = {
 "_edit_lock_": true
 }
@@ -423,7 +454,7 @@ __meta__ = {
 position = Vector2( 9, 0 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WallDetection/Right"]
-shape = SubResource( 10 )
+shape = SubResource( 32 )
 __meta__ = {
 "_edit_lock_": true
 }
