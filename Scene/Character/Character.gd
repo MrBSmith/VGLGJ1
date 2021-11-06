@@ -1,10 +1,13 @@
 extends KinematicBody2D
 class_name Character
 
+onready var dash_cooldown = $StatesMachine/Dash/Cooldown
+
 const SPEED : float = 280.0
 const GRAVITY : float = 20.0
 const JUMP_FORCE : float = 450.0
 const WALL_GRAB_FALL_SPEED = 40.0
+const DASH_SPEED = 600.0
 
 var direction : int = 0 setget set_direction 
 var velocity := Vector2.ZERO setget set_velocity
@@ -46,6 +49,21 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
+	if !is_state("Dash"):
+		update_state()
+		_compute_velocity()
+
+	set_velocity(move_and_slide(velocity, Vector2.UP, true, 4, deg2rad(1), false))
+
+
+#### VIRTUALS ####
+
+
+
+#### LOGIC ####
+
+
+func update_state() -> void:
 	if is_on_floor():
 		set_wall_impulse(false)
 		
@@ -68,19 +86,11 @@ func _physics_process(_delta: float) -> void:
 		else:
 			if velocity.y > 0:
 				set_state("Fall")
-	
+
+
+func _compute_velocity() -> void:
 	var y_vel = WALL_GRAB_FALL_SPEED if get_state_name() == "WallGrab" else velocity.y + GRAVITY
 	set_velocity(Vector2(direction * SPEED, y_vel))
-	
-	set_velocity(move_and_slide(velocity, Vector2.UP, true, 4, deg2rad(1), false))
-	
-
-
-#### VIRTUALS ####
-
-
-
-#### LOGIC ####
 
 
 func trigger_jump_tolerence() -> void:
@@ -106,6 +116,12 @@ func _jump() -> void:
 	set_velocity(Vector2(velocity.x, velocity.y - JUMP_FORCE))
 
 
+func _dash() -> void:
+	set_state("Dash")
+	
+	set_velocity(Vector2(direction * DASH_SPEED, 0))
+
+
 func is_near_wall() -> bool:
 	for area in $WallDetection.get_children():
 		for body in area.get_overlapping_bodies():
@@ -129,6 +145,10 @@ func _update_direction() -> void:
 	set_direction(int(Input.is_action_pressed("right")) - int(Input.is_action_pressed("left")))
 
 
+func _is_dash_available() -> bool:
+	return dash_cooldown.is_stopped() or dash_cooldown.is_paused()
+
+
 #### INPUTS ####
 
 func _input(_event: InputEvent) -> void:
@@ -141,6 +161,10 @@ func _input(_event: InputEvent) -> void:
 		
 		if is_on_floor() or is_near_wall() or jump_tolerence:
 			_jump()
+	
+	elif Input.is_action_just_pressed("dash"):
+		if _is_dash_available():
+			_dash()
 
 
 #### SIGNAL RESPONSES ####
@@ -168,3 +192,11 @@ func _on_WallImpulseTimer_timeout() -> void:
 func _on_Character_wall_impulse_changed() -> void:
 	if wall_impulse == false:
 		_update_direction()
+
+
+func _on_DashDuration_timeout() -> void:
+	update_state()
+
+
+func _on_Cooldown_timeout() -> void:
+	pass # Replace with function body.
