@@ -216,7 +216,7 @@ wait_time = 0.1
 one_shot = true
 
 [node name="JumpTolerenceTimer" type="Timer" parent="."]
-wait_time = 0.1
+wait_time = 0.2
 one_shot = true
 
 [node name="WallDetection" type="Node2D" parent="."]
@@ -245,6 +245,7 @@ one_shot = true
 
 [connection signal="direction_changed" from="." to="." method="_on_Character_direction_changed"]
 [connection signal="wall_impulse_changed" from="." to="." method="_on_Character_wall_impulse_changed"]
+[connection signal="state_changing" from="StatesMachine" to="." method="_on_StatesMachine_state_changing"]
 [connection signal="timeout" from="StatesMachine/Dash/DashDuration" to="." method="_on_DashDuration_timeout"]
 [connection signal="animation_finished" from="StatesMachine/Attack/AnimatedSprite" to="StatesMachine/Attack" method="_on_AnimatedSprite_animation_finished"]
 [connection signal="timeout" from="JumpBufferTimer" to="." method="_on_JumpBufferTimer_timeout"]

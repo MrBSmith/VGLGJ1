@@ -17,6 +17,12 @@ var jump_buffered := false
 var jump_tolerence := false
 var wall_impulse := false setget set_wall_impulse
 
+var mx_hp : int = 3
+var hp : int = 3 setget set_hp
+
+var max_nb_kunai := 4
+var nb_kunai : int = max_nb_kunai setget set_nb_kunai
+
 signal direction_changed
 signal wall_impulse_changed
 
@@ -43,18 +49,33 @@ func set_wall_impulse(value: bool) -> void:
 		wall_impulse = value
 		emit_signal("wall_impulse_changed")
 
+func set_nb_kunai(value: int) -> void:
+	if value != nb_kunai and value >= 0 and value <= max_nb_kunai:
+		nb_kunai = value
+		EVENTS.emit_signal("nb_kunai_changed", nb_kunai)
+
+func set_hp(value: int) -> void:
+	if hp != value:
+		hp = value
+		EVENTS.emit_signal("hp_changed", hp)
+
+
 #### BUILT-IN ####
 
 func _ready() -> void:
-	pass
+	var __ = EVENTS.connect("collect_kunai", self, "_on_EVENTS_collect_kunai")
 
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if !is_state("Dash"):
 		update_state()
 		_compute_velocity()
 
-	set_velocity(move_and_slide(velocity, Vector2.UP, true, 4, deg2rad(1), false))
+		set_velocity(move_and_slide(velocity, Vector2.UP, true, 4, deg2rad(1), false))
+	
+	else:
+		move_and_collide(velocity * delta)
+
 
 
 #### VIRTUALS ####
@@ -122,7 +143,10 @@ func _jump() -> void:
 func _dash() -> void:
 	set_state("Dash")
 	
-	set_velocity(Vector2(direction * DASH_SPEED, 0))
+	var mouse_pos = get_local_mouse_position()
+	var dir = mouse_pos.normalized()
+	
+	set_velocity(dir * DASH_SPEED)
 
 
 func _attack() -> void:
@@ -130,7 +154,11 @@ func _attack() -> void:
 
 
 func _throw_kunai() -> void:
+	if nb_kunai <= 0:
+		return
+	
 	var mouse_pos = get_local_mouse_position()
+	set_nb_kunai(nb_kunai - 1)
 	EVENTS.emit_signal("spawn_kunai", position, mouse_pos.normalized())
 
 
@@ -214,3 +242,14 @@ func _on_Character_wall_impulse_changed() -> void:
 func _on_DashDuration_timeout() -> void:
 	set_state("Idle")
 
+
+func _on_StatesMachine_state_changing(from_state, to_state) -> void:
+	if from_state == null or to_state == null:
+		return
+	
+	if from_state.name in ["Idle", "Move"] and to_state.name == "Fall":
+		trigger_jump_tolerence()
+
+
+func _on_EVENTS_collect_kunai() -> void:
+	set_nb_kunai(nb_kunai + 1)

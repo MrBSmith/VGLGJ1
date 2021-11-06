@@ -4,3 +4,6 @@ extends EventsBase
 
 signal collect_kunai()
 signal spawn_kunai(pos, dir)
+signal nb_kunai_changed(nb_kunai)
+
+signal hp_changed(hp)
