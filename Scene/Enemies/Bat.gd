@@ -2,13 +2,17 @@ extends KinematicBody2D
 class_name Bat
 
 onready var wanter_wait_timer = $StatesMachine/Wander/WaitTimer
+onready var attack_cooldown = $StatesMachine/Attack/AttackCooldown
 
-const SPEED = 300.0
+const SPEED = 150.0
+const DASH_SPEED : float = 600.0
+
 var velocity := Vector2.ZERO
 
 export var wander_distance = 80.0
 export var min_wander_wait_time : float = 1.0
 export var max_wander_wait_time : float = 4.0
+
 
 var path := PoolVector2Array()
 var target : KinematicBody2D = null
@@ -33,6 +37,9 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if is_state("Attack"):
+		var __ = move_and_collide(velocity * delta)
+	
 	if !path.empty():
 		_move_along_path(delta)
 
@@ -76,6 +83,9 @@ func _chase(node: KinematicBody2D) -> void:
 
 
 func _update_chase_path() -> void:
+	if target == null:
+		return
+	
 	path = get_parent().get_simple_path(get_global_position(), target.get_global_position())
 
 
@@ -91,6 +101,31 @@ func _get_rdm_wander_position() -> Vector2:
 	
 	return result_pos
 
+
+func _attack() -> void:
+	if target == null:
+		return
+	
+	set_state("Attack")
+	
+	path = PoolVector2Array()
+	var dir = get_global_position().direction_to(target.get_global_position())
+	
+	velocity = dir * DASH_SPEED
+
+
+func can_attack() -> bool:
+	if target == null:
+		return false
+	
+	if !attack_cooldown.is_stopped() and !attack_cooldown.is_paused():
+		return false
+	
+	for body in $AttackArea.get_overlapping_bodies():
+		if body is Player:
+			return true
+	
+	return false
 
 
 #### INPUTS ####
@@ -124,4 +159,17 @@ func _on_ViewFieldArea_body_exited(body: Node) -> void:
 func _on_ChasePathUpdateTimer_timeout() -> void:
 	if is_state("Chase"):
 		_update_chase_path()
-	
+
+
+func _on_AttackDuration_timeout() -> void:
+	_chase(target)
+
+
+func _on_AttackArea_body_entered(body: Node) -> void:
+	if body is Player && can_attack():
+		_attack()
+
+
+func _on_AttackCooldown_timeout() -> void:
+	if can_attack():
+		_attack()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Scene/Enemies/bat.png" type="Texture" id=1]
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateBase.gd" type="Script" id=2]
@@ -40,6 +40,9 @@ func enter_state() -> void:
 [sub_resource type="GDScript" id=5]
 script/source = "extends StateBase
 
+export var min_cooldown : float = 2.0
+export var max_cooldown : float = 3.0
+
 #### ACCESSORS ####
 
 func is_class(value: String): return value == \"\" or .is_class(value)
@@ -58,7 +61,10 @@ func _ready() -> void:
 #### LOGIC ####
 
 func enter_state() -> void:
-	$AttackCooldown.start()
+	$AttackDuration.start()
+
+func exit_state() -> void:
+	$AttackCooldown.start(rand_range(min_cooldown, max_cooldown))
 
 
 #### INPUTS ####
@@ -69,7 +75,10 @@ func enter_state() -> void:
 "
 
 [sub_resource type="CircleShape2D" id=2]
-radius = 74.2442
+radius = 163.642
+
+[sub_resource type="CircleShape2D" id=6]
+radius = 94.2915
 
 [sub_resource type="CircleShape2D" id=3]
 radius = 308.535
@@ -110,6 +119,9 @@ script = SubResource( 5 )
 wait_time = 2.0
 one_shot = true
 
+[node name="AttackDuration" type="Timer" parent="StatesMachine/Attack"]
+wait_time = 0.13
+
 [node name="StateLabel" type="Label" parent="StatesMachine"]
 margin_left = -20.6017
 margin_top = -29.217
@@ -131,6 +143,17 @@ __meta__ = {
 "_edit_lock_": true
 }
 
+[node name="AttackArea" type="Area2D" parent="."]
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
+shape = SubResource( 6 )
+__meta__ = {
+"_edit_lock_": true
+}
+
 [node name="ViewFieldArea" type="Area2D" parent="."]
 __meta__ = {
 "_edit_lock_": true
@@ -145,5 +168,8 @@ __meta__ = {
 [connection signal="path_finished" from="." to="." method="_on_Bat_path_finished"]
 [connection signal="timeout" from="StatesMachine/Wander/WaitTimer" to="." method="_on_WaitTimer_timeout"]
 [connection signal="timeout" from="StatesMachine/Chase/ChasePathUpdateTimer" to="." method="_on_ChasePathUpdateTimer_timeout"]
+[connection signal="timeout" from="StatesMachine/Attack/AttackCooldown" to="." method="_on_AttackCooldown_timeout"]
+[connection signal="timeout" from="StatesMachine/Attack/AttackDuration" to="." method="_on_AttackDuration_timeout"]
 [connection signal="body_entered" from="AggroArea" to="." method="_on_AggroArea_body_entered"]
+[connection signal="body_entered" from="AttackArea" to="." method="_on_AttackArea_body_entered"]
 [connection signal="body_exited" from="ViewFieldArea" to="." method="_on_ViewFieldArea_body_exited"]
