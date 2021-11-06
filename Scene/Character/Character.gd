@@ -6,7 +6,7 @@ onready var dash_cooldown = $StatesMachine/Dash/Cooldown
 const SPEED : float = 280.0
 const JUMP_FORCE : float = 450.0
 const WALL_GRAB_FALL_SPEED = 40.0
-const DASH_SPEED = 700.0
+const DASH_SPEED = 900.0
 
 var gravity : float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
@@ -73,6 +73,8 @@ func update_state() -> void:
 		
 		if direction == 0:
 			set_state("Idle")
+		else:
+			set_state("Move")
 	
 	else:
 		if is_on_wall() && !is_state("Jump"):
@@ -156,7 +158,7 @@ func _update_direction() -> void:
 
 
 func _is_dash_available() -> bool:
-	return dash_cooldown.is_stopped() or dash_cooldown.is_paused()
+	return !is_state("Dash") and (dash_cooldown.is_stopped() or dash_cooldown.is_paused())
 
 
 #### INPUTS ####
@@ -210,5 +212,5 @@ func _on_Character_wall_impulse_changed() -> void:
 
 
 func _on_DashDuration_timeout() -> void:
-	update_state()
+	set_state("Idle")
 

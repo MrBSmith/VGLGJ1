@@ -71,7 +71,7 @@ func exit_state() -> void:
 #### SIGNAL RESPONSES ####
 "
 
-[sub_resource type="GDScript" id=10]
+[sub_resource type="GDScript" id=4]
 script/source = "extends StateBase
 
 onready var animated_sprite = $AnimatedSprite
@@ -113,21 +113,21 @@ func _on_AnimatedSprite_animation_finished() -> void:
 	owner.update_state()
 "
 
-[sub_resource type="AtlasTexture" id=6]
+[sub_resource type="AtlasTexture" id=5]
 atlas = ExtResource( 6 )
 region = Rect2( 0, 0, 48, 48 )
 
-[sub_resource type="AtlasTexture" id=7]
+[sub_resource type="AtlasTexture" id=6]
 atlas = ExtResource( 6 )
 region = Rect2( 0, 48, 48, 48 )
 
-[sub_resource type="AtlasTexture" id=8]
+[sub_resource type="AtlasTexture" id=7]
 atlas = ExtResource( 6 )
 region = Rect2( 0, 96, 48, 48 )
 
-[sub_resource type="SpriteFrames" id=5]
+[sub_resource type="SpriteFrames" id=8]
 animations = [ {
-"frames": [ SubResource( 6 ), SubResource( 7 ), SubResource( 8 ) ],
+"frames": [ SubResource( 5 ), SubResource( 6 ), SubResource( 7 ) ],
 "loop": false,
 "name": "Attack",
 "speed": 18.0
@@ -136,7 +136,7 @@ animations = [ {
 [sub_resource type="RectangleShape2D" id=9]
 extents = Vector2( 7, 14 )
 
-[sub_resource type="RectangleShape2D" id=4]
+[sub_resource type="RectangleShape2D" id=10]
 extents = Vector2( 2.53905, 3.62773 )
 
 [node name="Character" type="KinematicBody2D"]
@@ -177,7 +177,7 @@ script = ExtResource( 1 )
 script = SubResource( 2 )
 
 [node name="DashDuration" type="Timer" parent="StatesMachine/Dash"]
-wait_time = 0.1
+wait_time = 0.18
 one_shot = true
 
 [node name="Cooldown" type="Timer" parent="StatesMachine/Dash"]
@@ -187,11 +187,11 @@ one_shot = true
 script = SubResource( 3 )
 
 [node name="Attack" type="Node2D" parent="StatesMachine"]
-script = SubResource( 10 )
+script = SubResource( 4 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="StatesMachine/Attack"]
 visible = false
-frames = SubResource( 5 )
+frames = SubResource( 8 )
 animation = "Attack"
 offset = Vector2( 2, 0 )
 
@@ -225,7 +225,7 @@ position = Vector2( -4.5, 0 )
 [node name="Left" type="Area2D" parent="WallDetection"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WallDetection/Left"]
-shape = SubResource( 4 )
+shape = SubResource( 10 )
 __meta__ = {
 "_edit_lock_": true
 }
@@ -234,7 +234,7 @@ __meta__ = {
 position = Vector2( 9, 0 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WallDetection/Right"]
-shape = SubResource( 4 )
+shape = SubResource( 10 )
 __meta__ = {
 "_edit_lock_": true
 }
