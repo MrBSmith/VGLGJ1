@@ -122,6 +122,9 @@ func _dash() -> void:
 	set_velocity(Vector2(direction * DASH_SPEED, 0))
 
 
+func _attack() -> void:
+	set_state("Attack")
+
 func is_near_wall() -> bool:
 	for area in $WallDetection.get_children():
 		for body in area.get_overlapping_bodies():
@@ -165,7 +168,9 @@ func _input(_event: InputEvent) -> void:
 	elif Input.is_action_just_pressed("dash"):
 		if _is_dash_available():
 			_dash()
-
+	
+	elif Input.is_action_just_pressed("left_click"):
+		_attack()
 
 #### SIGNAL RESPONSES ####
 
@@ -197,6 +202,3 @@ func _on_Character_wall_impulse_changed() -> void:
 func _on_DashDuration_timeout() -> void:
 	update_state()
 
-
-func _on_Cooldown_timeout() -> void:
-	pass # Replace with function body.
