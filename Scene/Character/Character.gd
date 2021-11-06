@@ -4,14 +4,17 @@ class_name Character
 const SPEED : float = 280.0
 const GRAVITY : float = 20.0
 const JUMP_FORCE : float = 450.0
+const WALL_GRAB_FALL_SPEED = 40.0
 
 var direction : int = 0 setget set_direction 
 var velocity := Vector2.ZERO setget set_velocity
 
 var jump_buffered := false
 var jump_tolerence := false
+var wall_impulse := false setget set_wall_impulse
 
 signal direction_changed
+signal wall_impulse_changed
 
 #### ACCESSORS ####
 
@@ -31,6 +34,10 @@ func is_state(value: String) -> bool: return get_state_name() == value
 
 func set_velocity(value: Vector2) -> void: velocity = value
 
+func set_wall_impulse(value: bool) -> void:
+	if value != wall_impulse:
+		wall_impulse = value
+		emit_signal("wall_impulse_changed")
 
 #### BUILT-IN ####
 
@@ -39,12 +46,9 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	var grav = GRAVITY / 6 if get_state_name() == "WallGrab" else GRAVITY
-	
-	set_velocity(Vector2(direction * SPEED, velocity.y + grav))
-	set_velocity(move_and_slide(velocity, Vector2.UP, true, 4, deg2rad(1), false))
-	
 	if is_on_floor():
+		set_wall_impulse(false)
+		
 		if jump_buffered:
 			_jump()
 		
@@ -64,7 +68,12 @@ func _physics_process(_delta: float) -> void:
 		else:
 			if velocity.y > 0:
 				set_state("Fall")
-
+	
+	var y_vel = WALL_GRAB_FALL_SPEED if get_state_name() == "WallGrab" else velocity.y + GRAVITY
+	set_velocity(Vector2(direction * SPEED, y_vel))
+	
+	set_velocity(move_and_slide(velocity, Vector2.UP, true, 4, deg2rad(1), false))
+	
 
 
 #### VIRTUALS ####
@@ -78,6 +87,7 @@ func trigger_jump_tolerence() -> void:
 	jump_tolerence = true
 	$JumpTolerenceTimer.start()
 
+
 func buffer_jump() -> void:
 	jump_buffered = true
 	$JumpBufferTimer.start()
@@ -87,19 +97,49 @@ func _jump() -> void:
 	set_state("Jump")
 	jump_buffered = false
 	
-	set_velocity(velocity + (Vector2.UP * JUMP_FORCE))
+	var wall_dir = get_wall_direction()
+	if wall_dir != 0:
+		direction = -wall_dir
+		wall_impulse = true
+		$WallImpulseTimer.start()
+	
+	set_velocity(Vector2(velocity.x, velocity.y - JUMP_FORCE))
+
+
+func is_near_wall() -> bool:
+	for area in $WallDetection.get_children():
+		for body in area.get_overlapping_bodies():
+			if body is TileMap && body.name == "Walls":
+				return true
+	return false
+
+
+func get_wall_direction() -> int:
+	if !is_near_wall():
+		return 0
+	
+	for body in $WallDetection/Left.get_overlapping_bodies():
+		if body is TileMap and body.name == "Walls":
+			return -1
+	
+	return 1
+
+
+func _update_direction() -> void:
+	set_direction(int(Input.is_action_pressed("right")) - int(Input.is_action_pressed("left")))
 
 
 #### INPUTS ####
 
 func _input(_event: InputEvent) -> void:
-	set_direction(int(Input.is_action_pressed("right")) - int(Input.is_action_pressed("left")))
+	if !wall_impulse:
+		_update_direction()
 	
 	if Input.is_action_just_pressed("jump"):
 		if is_state("Fall"):
 			buffer_jump()
 		
-		if is_on_floor() or is_state("WallGrab") or jump_tolerence:
+		if is_on_floor() or is_near_wall() or jump_tolerence:
 			_jump()
 
 
@@ -119,3 +159,12 @@ func _on_JumpBufferTimer_timeout() -> void:
 
 func _on_JumpTolerenceTimer_timeout() -> void:
 	jump_tolerence = false
+
+
+func _on_WallImpulseTimer_timeout() -> void:
+	wall_impulse = false
+
+
+func _on_Character_wall_impulse_changed() -> void:
+	if wall_impulse == false:
+		_update_direction()
