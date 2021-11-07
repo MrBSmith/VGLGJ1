@@ -4,6 +4,7 @@
 
 [node name="Game" type="Node"]
 script = ExtResource( 1 )
+difficulty = 3
 
 [node name="ScoreMultiplierTimer" type="Timer" parent="."]
 

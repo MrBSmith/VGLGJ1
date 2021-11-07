@@ -66,6 +66,11 @@ func hurt() -> void:
 func die() -> void:
 	queue_free()
 
+
+func _attack() -> void:
+	pass
+
+
 #### INPUTS ####
 
 

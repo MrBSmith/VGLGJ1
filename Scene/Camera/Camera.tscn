@@ -64,7 +64,7 @@ func enter_state():
 
 func exit_state():
 	timer_node.stop()
-	move_to(origin_position)
+	owner.set_position(origin_position)
 	origin_position = Vector2.ZERO
 	random_position = Vector2.ZERO
 	owner.rotation_degrees = 0.0

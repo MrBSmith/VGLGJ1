@@ -1,6 +1,5 @@
 extends Node2D
 
-
 var heart_collectable_scene = preload("res://Scene/Collectables/HeartCollectable.tscn")
 
 onready var spawner_container = $SpawnerContainer
@@ -10,20 +9,31 @@ class Difficulty:
 	var nb_waves : int = 1
 	var nb_enemies_per_wave : int = 4
 	var wave_cooldown = 0.0
-	var enemy_scenes = []
+	var enemy_prob_array : Array = []
 	
-	func _init(_nb_waves: int, nb_enemies: int, cooldown: float = 0.0, enemy_scenes_array : Array = ["res://Scene/Actors/Enemies/Bat.tscn"]):
+	func _init(_nb_waves: int, nb_enemies: int, cooldown: float = 0.0, 
+			_enemy_prob_array : Array = [EnemyProb.new(1.0, "Bat")]):
+		
 		nb_waves = _nb_waves
 		nb_enemies_per_wave = nb_enemies
 		wave_cooldown = cooldown
-		enemy_scenes = enemy_scenes_array
+		enemy_prob_array = _enemy_prob_array
+
+
+class EnemyProb:
+	var chance_to_appear : float = 1.0
+	var enemy_scene : PackedScene = null
+	
+	func _init(chance: float, enemy_name: String) -> void:
+		chance_to_appear = chance
+		enemy_scene = GAME.enemy_dict[enemy_name]
 
 
 var difficulty_levels = [
 	Difficulty.new(1, 4),
-	Difficulty.new(3, 6),
-	Difficulty.new(5, 8, 30.0),
-	Difficulty.new(999, 5, 10.0),
+	Difficulty.new(3, 6, 0.0, [EnemyProb.new(5.0, "Bat"), EnemyProb.new(1.0, "Squid")]),
+	Difficulty.new(5, 8, 30.0, [EnemyProb.new(5.0, "Bat"), EnemyProb.new(1.0, "Squid")]),
+	Difficulty.new(999, 5, 10.0, [EnemyProb.new(5.0, "Bat"), EnemyProb.new(2.0, "Squid")]),
 	Difficulty.new(0, 0, 0.0)
 ]
 
@@ -33,8 +43,6 @@ var current_difficulty : Difficulty = null
 
 #### ACCESSORS ####
 
-func is_class(value: String): return value == "" or .is_class(value)
-func get_class() -> String: return ""
 
 
 #### BUILT-IN ####
@@ -88,12 +96,36 @@ func new_wave() -> void:
 		var spawner = spawner_array[rdm_id]
 		spawner_array.remove(rdm_id)
 		
-		var rdm_enemy_id = Math.randi_range(0, current_difficulty.enemy_scenes.size() - 1)
-		var enemy_scene = load(current_difficulty.enemy_scenes[rdm_enemy_id])
+		var enemy_prob_array = current_difficulty.enemy_prob_array
+		var rdm_value = rand_range(0.0, _sum_prob(enemy_prob_array))
+		var enemy_id = _get_prob_id(rdm_value, enemy_prob_array)
+		var enemy_scene = enemy_prob_array[enemy_id].enemy_scene
 		var enemy = enemy_scene.instance()
 		
 		spawner.spawn(enemy)
 
+
+
+func _sum_prob(enemy_prob_array: Array) -> float:
+	var sum = 0.0
+	for enemy_prob in enemy_prob_array:
+		sum += enemy_prob.chance_to_appear
+	return sum
+
+
+func _get_prob_id(value: float, enemy_prob_array: Array) -> int:
+	var min_value = 0.0
+	
+	for i in range(enemy_prob_array.size()):
+		var enemy_prob = enemy_prob_array[i]
+		var max_value = min_value + enemy_prob.chance_to_appear
+		
+		if value >= min_value && value < max_value:
+			return i
+		
+		min_value = max_value
+	
+	return 0
 
 
 #### INPUTS ####

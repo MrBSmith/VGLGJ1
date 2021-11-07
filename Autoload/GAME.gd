@@ -8,6 +8,12 @@ enum DIFFICULTY {
 	NONE
 }
 
+var enemy_dict : Dictionary = {
+	"Bat": preload("res://Scene/Actors/Enemies/Bat/Bat.tscn"),
+	"Squid": preload("res://Scene/Actors/Enemies/Squid/Squid.tscn")
+}
+
+
 const TILE_SIZE = Vector2(16.0, 16.0)
 var screen_size = Vector2(640, 360)
 
