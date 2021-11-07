@@ -86,6 +86,9 @@ func _physics_process(delta: float) -> void:
 
 
 func update_state() -> void:
+	if is_state("Die"):
+		return
+	
 	if is_on_floor():
 		set_wall_impulse(false)
 		
@@ -201,6 +204,8 @@ func _is_dash_available() -> bool:
 func die() -> void:
 	set_state("Die")
 	set_direction(0)
+	
+	EVENTS.emit_signal("gameover")
 
 
 

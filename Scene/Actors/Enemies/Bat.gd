@@ -115,7 +115,7 @@ func _get_rdm_wander_position() -> Vector2:
 
 
 func _attack() -> void:
-	if target == null:
+	if target == null or target.is_state("Die"):
 		return
 	
 	set_state("Attack")
@@ -136,8 +136,8 @@ func die() -> void:
 	set_state("Fall")
 	set_behaviour_state("Dead")
 	
-	queue_free()
 	EVENTS.emit_signal("enemy_killed")
+	queue_free()
 
 
 #### INPUTS ####

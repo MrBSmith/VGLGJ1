@@ -31,6 +31,18 @@ shader_param/mix_amount = 0.0
 [sub_resource type="StreamTexture" id=20]
 load_path = "res://.import/bat_SpriteSheet.png-222be466eacc4ab756ab2b3f75ba3dd3.stex"
 
+[sub_resource type="AtlasTexture" id=7]
+atlas = SubResource( 20 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = SubResource( 20 )
+region = Rect2( 64, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=9]
+atlas = SubResource( 20 )
+region = Rect2( 96, 0, 32, 32 )
+
 [sub_resource type="AtlasTexture" id=11]
 atlas = SubResource( 20 )
 region = Rect2( 32, 0, 32, 32 )
@@ -43,17 +55,13 @@ region = Rect2( 64, 0, 32, 32 )
 atlas = SubResource( 20 )
 region = Rect2( 96, 0, 32, 32 )
 
-[sub_resource type="AtlasTexture" id=7]
-atlas = SubResource( 20 )
-region = Rect2( 32, 0, 32, 32 )
+[sub_resource type="AtlasTexture" id=26]
+atlas = ExtResource( 5 )
+region = Rect2( 96, 32, 32, 32 )
 
-[sub_resource type="AtlasTexture" id=8]
-atlas = SubResource( 20 )
-region = Rect2( 64, 0, 32, 32 )
-
-[sub_resource type="AtlasTexture" id=9]
-atlas = SubResource( 20 )
-region = Rect2( 96, 0, 32, 32 )
+[sub_resource type="AtlasTexture" id=25]
+atlas = ExtResource( 5 )
+region = Rect2( 32, 64, 32, 32 )
 
 [sub_resource type="AtlasTexture" id=21]
 atlas = ExtResource( 5 )
@@ -71,34 +79,21 @@ region = Rect2( 64, 32, 32, 32 )
 atlas = ExtResource( 5 )
 region = Rect2( 0, 64, 32, 32 )
 
-[sub_resource type="AtlasTexture" id=25]
-atlas = ExtResource( 5 )
-region = Rect2( 32, 64, 32, 32 )
-
-[sub_resource type="AtlasTexture" id=26]
-atlas = ExtResource( 5 )
-region = Rect2( 96, 32, 32, 32 )
-
 [sub_resource type="SpriteFrames" id=10]
 animations = [ {
-"frames": [ SubResource( 11 ), SubResource( 12 ), SubResource( 13 ) ],
-"loop": true,
-"name": "Idle",
-"speed": 13.0
-}, {
 "frames": [ SubResource( 7 ), SubResource( 8 ), SubResource( 9 ) ],
 "loop": true,
 "name": "Move",
 "speed": 13.0
 }, {
-"frames": [ SubResource( 21 ), SubResource( 22 ), SubResource( 23 ) ],
+"frames": [ SubResource( 11 ), SubResource( 12 ), SubResource( 13 ) ],
 "loop": true,
-"name": "Attack",
-"speed": 17.0
+"name": "Idle",
+"speed": 13.0
 }, {
-"frames": [ SubResource( 24 ) ],
+"frames": [ SubResource( 26 ) ],
 "loop": true,
-"name": "Fall",
+"name": "Hurt",
 "speed": 5.0
 }, {
 "frames": [ SubResource( 25 ) ],
@@ -106,9 +101,14 @@ animations = [ {
 "name": "Die",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 26 ) ],
+"frames": [ SubResource( 21 ), SubResource( 22 ), SubResource( 23 ) ],
 "loop": true,
-"name": "Hurt",
+"name": "Attack",
+"speed": 15.0
+}, {
+"frames": [ SubResource( 24 ) ],
+"loop": true,
+"name": "Fall",
 "speed": 5.0
 } ]
 

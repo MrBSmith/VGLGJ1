@@ -1,19 +1,20 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Scene/Kunai/KunaiProjectile.png" type="Texture" id=1]
 [ext_resource path="res://Scene/Kunai/Kunai.gd" type="Script" id=2]
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateMachine.gd" type="Script" id=3]
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateBase.gd" type="Script" id=4]
+[ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateLabel.gd" type="Script" id=5]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 4.544, 3.43871 )
+extents = Vector2( 4.544, 4 )
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 8, 4.5 )
+extents = Vector2( 8, 6 )
 
 [node name="Kunai" type="KinematicBody2D"]
 collision_layer = 2
-collision_mask = 6
+collision_mask = 12
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
@@ -42,8 +43,19 @@ script = ExtResource( 4 )
 [node name="Collectable" type="Node" parent="StatesMachine"]
 script = ExtResource( 4 )
 
+[node name="StateLabel" type="Label" parent="StatesMachine"]
+margin_left = -20.1587
+margin_top = -20.5525
+margin_right = 19.8413
+margin_bottom = -6.55246
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 0
+collision_mask = 5
 __meta__ = {
 "_edit_lock_": true
 }

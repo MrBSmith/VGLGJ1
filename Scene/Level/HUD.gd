@@ -13,6 +13,9 @@ func _ready() -> void:
 		for icon in container.get_children():
 			icon.get_texture().set_local_to_scene(true)
 			icon.get_texture().get_atlas().set_local_to_scene(true)
+	
+	_update_icons("HP", 3)
+	_update_icons("Kunai", 4)
 
 #### VIRTUALS ####
 

@@ -17,10 +17,6 @@ shader = ExtResource( 10 )
 shader_param/flash_color = Color( 1, 1, 1, 1 )
 shader_param/mix_amount = 0.0
 
-[sub_resource type="AtlasTexture" id=4]
-atlas = ExtResource( 6 )
-region = Rect2( 0, 0, 16, 16 )
-
 [sub_resource type="AtlasTexture" id=1]
 atlas = ExtResource( 6 )
 region = Rect2( 16, 0, 16, 16 )
@@ -33,49 +29,13 @@ region = Rect2( 32, 0, 16, 16 )
 atlas = ExtResource( 6 )
 region = Rect2( 48, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=19]
+[sub_resource type="AtlasTexture" id=4]
 atlas = ExtResource( 6 )
-region = Rect2( 16, 48, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=20]
-atlas = ExtResource( 6 )
-region = Rect2( 16, 0, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=5]
-atlas = ExtResource( 6 )
-region = Rect2( 0, 16, 16, 16 )
+region = Rect2( 0, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=6]
 atlas = ExtResource( 6 )
 region = Rect2( 0, 48, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=10]
-atlas = ExtResource( 6 )
-region = Rect2( 16, 32, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=11]
-atlas = ExtResource( 6 )
-region = Rect2( 32, 32, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=12]
-atlas = ExtResource( 6 )
-region = Rect2( 48, 32, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=13]
-atlas = ExtResource( 6 )
-region = Rect2( 64, 32, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=7]
-atlas = ExtResource( 6 )
-region = Rect2( 16, 16, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=8]
-atlas = ExtResource( 6 )
-region = Rect2( 32, 16, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=9]
-atlas = ExtResource( 6 )
-region = Rect2( 64, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=14]
 atlas = ExtResource( 6 )
@@ -97,17 +57,87 @@ region = Rect2( 48, 48, 16, 16 )
 atlas = ExtResource( 6 )
 region = Rect2( 64, 48, 16, 16 )
 
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 6 )
+region = Rect2( 16, 16, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 6 )
+region = Rect2( 32, 16, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=10]
+atlas = ExtResource( 6 )
+region = Rect2( 16, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=11]
+atlas = ExtResource( 6 )
+region = Rect2( 32, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=12]
+atlas = ExtResource( 6 )
+region = Rect2( 48, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=13]
+atlas = ExtResource( 6 )
+region = Rect2( 64, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=9]
+atlas = ExtResource( 6 )
+region = Rect2( 64, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=19]
+atlas = ExtResource( 6 )
+region = Rect2( 16, 48, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=20]
+atlas = ExtResource( 6 )
+region = Rect2( 16, 0, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 6 )
+region = Rect2( 0, 16, 16, 16 )
+
 [sub_resource type="SpriteFrames" id=21]
 animations = [ {
+"frames": [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 2 ) ],
+"loop": true,
+"name": "Move",
+"speed": 13.0
+}, {
 "frames": [ SubResource( 4 ) ],
 "loop": true,
 "name": "Idle",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 2 ) ],
+"frames": [ SubResource( 6 ) ],
 "loop": true,
-"name": "Move",
+"name": "WallGrab",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 14 ), SubResource( 15 ) ],
+"loop": true,
+"name": "Hurt",
 "speed": 13.0
+}, {
+"frames": [ SubResource( 16 ), SubResource( 17 ), SubResource( 18 ) ],
+"loop": true,
+"name": "Land",
+"speed": 20.0
+}, {
+"frames": [ SubResource( 7 ), SubResource( 8 ) ],
+"loop": true,
+"name": "Roll",
+"speed": 13.0
+}, {
+"frames": [ SubResource( 10 ), SubResource( 11 ), SubResource( 12 ), SubResource( 13 ) ],
+"loop": false,
+"name": "Die",
+"speed": 13.0
+}, {
+"frames": [ SubResource( 9 ) ],
+"loop": true,
+"name": "Jump",
+"speed": 5.0
 }, {
 "frames": [ SubResource( 19 ) ],
 "loop": true,
@@ -123,36 +153,6 @@ animations = [ {
 "loop": true,
 "name": "Fall",
 "speed": 5.0
-}, {
-"frames": [ SubResource( 6 ) ],
-"loop": true,
-"name": "WallGrab",
-"speed": 5.0
-}, {
-"frames": [ SubResource( 10 ), SubResource( 11 ), SubResource( 12 ), SubResource( 13 ) ],
-"loop": false,
-"name": "Die",
-"speed": 13.0
-}, {
-"frames": [ SubResource( 7 ), SubResource( 8 ) ],
-"loop": true,
-"name": "Roll",
-"speed": 13.0
-}, {
-"frames": [ SubResource( 9 ) ],
-"loop": true,
-"name": "Jump",
-"speed": 5.0
-}, {
-"frames": [ SubResource( 14 ), SubResource( 15 ) ],
-"loop": true,
-"name": "Hurt",
-"speed": 13.0
-}, {
-"frames": [ SubResource( 16 ), SubResource( 17 ), SubResource( 18 ) ],
-"loop": true,
-"name": "Land",
-"speed": 20.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=22]
@@ -308,14 +308,16 @@ func enter_state() -> void:
 	owner.set_facing_direction(sign(mouse_pos.x))
 	attack_animated_sprite.set_rotation(attack_angle)
 	
-	for body in $AnimatedSprite/HitBox.get_overlapping_bodies():
-		if body is Enemy:
-			body.hurt()
+	_attack_effect()
+
 
 
 #### LOGIC ####
 
-
+func _attack_effect() -> void:
+	for body in $AnimatedSprite/HitBox.get_overlapping_bodies():
+		if body is Enemy:
+			body.hurt()
 
 #### INPUTS ####
 
@@ -327,6 +329,11 @@ func enter_state() -> void:
 func _on_AnimatedSprite_animation_finished() -> void:
 	attack_animated_sprite.set_visible(false)
 	owner.update_state()
+
+
+func _on_AnimatedSprite_frame_changed() -> void:
+	if attack_animated_sprite.get_frame() == 1:
+		_attack_effect()
 "
 
 [sub_resource type="AtlasTexture" id=27]
@@ -350,7 +357,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=31]
-extents = Vector2( 11.5, 14 )
+extents = Vector2( 14.0991, 19.5264 )
 
 [sub_resource type="RectangleShape2D" id=32]
 extents = Vector2( 2.53905, 3.62773 )
@@ -432,7 +439,7 @@ collision_layer = 0
 collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StatesMachine/Attack/AnimatedSprite/HitBox" index="0"]
-position = Vector2( 13, 0 )
+position = Vector2( 14.6391, -0.0262642 )
 shape = SubResource( 31 )
 
 [node name="Die" type="Node" parent="StatesMachine" index="8"]
@@ -490,6 +497,7 @@ one_shot = true
 [connection signal="state_changing" from="StatesMachine" to="." method="_on_StatesMachine_state_changing"]
 [connection signal="timeout" from="StatesMachine/Dash/DashDuration" to="." method="_on_DashDuration_timeout"]
 [connection signal="animation_finished" from="StatesMachine/Attack/AnimatedSprite" to="StatesMachine/Attack" method="_on_AnimatedSprite_animation_finished"]
+[connection signal="frame_changed" from="StatesMachine/Attack/AnimatedSprite" to="StatesMachine/Attack" method="_on_AnimatedSprite_frame_changed"]
 [connection signal="timeout" from="JumpBufferTimer" to="." method="_on_JumpBufferTimer_timeout"]
 [connection signal="timeout" from="JumpTolerenceTimer" to="." method="_on_JumpTolerenceTimer_timeout"]
 [connection signal="timeout" from="WallImpulseTimer" to="." method="_on_WallImpulseTimer_timeout"]

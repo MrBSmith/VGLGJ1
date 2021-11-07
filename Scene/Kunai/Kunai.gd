@@ -36,9 +36,9 @@ func _physics_process(delta: float) -> void:
 		if collider is TileMap and collider.name == "Walls":
 			set_state("Collectable")
 		else:
-			if collider.is_class("Enemy"):
+			if collider.is_class("Enemy") && is_state("Projectile"):
 				collider.hurt()
-			set_state("Fall")
+				set_state("Fall")
 
 
 #### VIRTUALS ####
