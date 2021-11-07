@@ -1,0 +1,120 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateMachine.gd" type="Script" id=1]
+[ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateBase.gd" type="Script" id=2]
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends Camera2D
+
+#### ACCESSORS ####
+
+
+
+#### BUILT-IN ####
+
+func _ready() -> void:
+	var __ = EVENTS.connect(\"screen_shake\", self, \"_on_EVENTS_screen_shake\")
+
+#### VIRTUALS ####
+
+
+
+#### LOGIC ####
+
+# Make the camera shake for the given magnitude & duration
+func shake(magnitude: float, duration: float):
+	$StatesMachine/Shake.magnitude = magnitude
+	$StatesMachine/Shake.duration = duration
+	$StatesMachine.set_state(\"Shake\")
+
+
+#### INPUTS ####
+
+
+
+#### SIGNAL RESPONSES ####
+
+func _on_EVENTS_screen_shake(magnitude: float, duration: float) -> void:
+	shake(magnitude, duration)
+
+"
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends StateBase
+
+onready var timer_node = $Timer
+
+var origin_position : Vector2 = Vector2.ZERO
+var random_position : Vector2 = Vector2.ZERO
+var random_rotation : float = 0.0
+var magnitude : float = 0.0
+var duration : float = 0.0
+
+
+func _ready():
+	var _err = timer_node.connect(\"timeout\", self, \"on_timer_timeout\")
+
+
+func enter_state():
+	origin_position = owner.get_global_position()
+	random_position = origin_position
+	timer_node.set_wait_time(duration)
+	timer_node.start()
+
+
+func exit_state():
+	timer_node.stop()
+	move_to(origin_position)
+	origin_position = Vector2.ZERO
+	random_position = Vector2.ZERO
+	owner.rotation_degrees = 0.0
+
+
+# Give a new random destination position each time a new one is given
+func update_state(_delta):
+	if magnitude == 0.0 or duration == 0.0:
+		return states_machine.previous_state
+	
+	if random_position == Vector2.ZERO or move_to(random_position):
+		random_position = origin_position + Vector2(rand_range(-3.0, 3.0), rand_range(-3.0, 3.0)) * magnitude
+	
+	if random_rotation == 0.0 or rotate_to(random_rotation):
+		random_rotation = rand_range(-0.2, 0.2) * magnitude
+
+
+# Move to the current destination, return true when it's arrived, false otherwise
+func move_to(dest_pos : Vector2):
+	owner.global_position = owner.global_position.linear_interpolate(dest_pos, clamp(0.2 * magnitude, 0.01, 1.0))
+	return owner.global_position.distance_to(dest_pos) < 2.0
+
+
+
+func rotate_to(dest_rot : float):
+	owner.rotation_degrees = lerp(owner.rotation_degrees, dest_rot, clamp(0.2 * magnitude, 0.01, 1.0))
+	return abs(owner.rotation_degrees - dest_rot) < 1.0
+
+
+func on_timer_timeout():
+	states_machine.set_state(states_machine.previous_state)
+
+
+"
+
+[node name="Camera" type="Camera2D"]
+offset = Vector2( 320, 180 )
+current = true
+script = SubResource( 2 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="StatesMachine" type="Node2D" parent="."]
+script = ExtResource( 1 )
+
+[node name="Idle" type="Node" parent="StatesMachine"]
+script = ExtResource( 2 )
+
+[node name="Shake" type="Node" parent="StatesMachine"]
+script = SubResource( 1 )
+
+[node name="Timer" type="Timer" parent="StatesMachine/Shake"]

@@ -10,8 +10,6 @@ func get_class() -> String: return "Enemy"
 
 #### BUILT-IN ####
 
-func _ready() -> void:
-	pass
 
 #### VIRTUALS ####
 
@@ -19,6 +17,15 @@ func _ready() -> void:
 
 #### LOGIC ####
 
+func die() -> void:
+	var rng = Math.randi_range(0, 30 * (GAME.difficulty + 1))
+	if rng == 0:
+		EVENTS.emit_signal("spawn_heart", get_global_position())
+
+
+func hurt() -> void:
+	EVENTS.emit_signal("screen_shake", 1.5, 0.25)
+	.hurt()
 
 
 #### INPUTS ####

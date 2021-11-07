@@ -4,7 +4,8 @@ enum DIFFICULTY {
 	EASY,
 	NORMAL,
 	HARD,
-	IMPOSSIBLE
+	IMPOSSIBLE,
+	NONE
 }
 
 const TILE_SIZE = Vector2(16.0, 16.0)

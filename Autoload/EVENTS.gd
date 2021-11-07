@@ -17,3 +17,5 @@ signal wave_started(wave_id)
 
 signal new_difficulty(difficulty)
 signal difficulty_finished()
+
+signal spawn_heart(pos)

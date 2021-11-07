@@ -1,6 +1,8 @@
 extends KinematicBody2D
 class_name Actor
 
+var gravity : float = ProjectSettings.get_setting("physics/2d/default_gravity")
+
 onready var animated_sprite = get_node_or_null("AnimatedSprite")
 onready var tween = $Tween
 
@@ -17,7 +19,7 @@ func is_class(value: String): return value == "Actor" or .is_class(value)
 func get_class() -> String: return "Actor"
 
 func set_hp(value: int) -> void:
-	if value != hp:
+	if value != hp && value <= max_hp && value >= 0:
 		hp = value
 		emit_signal("hp_changed")
 

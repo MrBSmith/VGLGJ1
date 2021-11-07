@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Perso_SpriteSheet.png-0d2895eecf08b00f32af52005194f6f4.stex"
+path="res://.import/Hp_Collectable.png-dce7e9294c4d339746f921787c6257e3.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scene/Actors/Character/Sprites/Perso_SpriteSheet.png"
-dest_files=[ "res://.import/Perso_SpriteSheet.png-0d2895eecf08b00f32af52005194f6f4.stex" ]
+source_file="res://Scene/Collectables/Hp_Collectable.png"
+dest_files=[ "res://.import/Hp_Collectable.png-dce7e9294c4d339746f921787c6257e3.stex" ]
 
 [params]
 

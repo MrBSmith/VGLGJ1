@@ -3,13 +3,10 @@ class_name Player
 
 onready var dash_cooldown = $StatesMachine/Dash/Cooldown
 
-
 const SPEED : float = 280.0
 const JUMP_FORCE : float = 450.0
 const WALL_GRAB_FALL_SPEED = 40.0
 const DASH_SPEED = 700.0
-
-var gravity : float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 var direction : int = 0 setget set_direction 
 var facing_direction : int = 0 setget set_facing_direction
@@ -208,6 +205,9 @@ func die() -> void:
 	EVENTS.emit_signal("gameover")
 
 
+func hurt() -> void:
+	EVENTS.emit_signal("screen_shake", 3.0, 0.4)
+	.hurt()
 
 #### INPUTS ####
 

@@ -34,12 +34,17 @@ func is_behaviour_state(value: String) -> bool: return get_behaviour_state_name(
 
 #### BUILT-IN ####
 
-func _ready() -> void:
-	pass
 
 
 func _physics_process(delta: float) -> void:
-	if is_behaviour_state("Attack"):
+	if is_state("Fall"):
+		velocity.y += gravity
+		var __ = move_and_slide(velocity, Vector2.UP)
+		
+		if is_on_floor():
+			set_state("Die")
+	
+	elif is_behaviour_state("Attack"):
 		var collision = move_and_collide(velocity * delta)
 		if collision != null:
 			var collider = collision.collider
@@ -51,9 +56,6 @@ func _physics_process(delta: float) -> void:
 	elif !path.empty():
 		set_state("Move")
 		_move_along_path(delta)
-	
-	elif is_on_floor() && is_state("Fall"):
-		set_state("Die")
 
 
 #### VIRTUALS ####
@@ -63,6 +65,9 @@ func _physics_process(delta: float) -> void:
 #### LOGIC ####
 
 func _move_along_path(delta: float) -> void:
+	if is_behaviour_state("Dead"):
+		return
+	
 	var next_point = path[0]
 	var dir = global_position.direction_to(next_point)
 	var dist = global_position.distance_to(next_point)
@@ -80,6 +85,9 @@ func _move_along_path(delta: float) -> void:
 
 
 func wander() -> void:
+	if is_behaviour_state("Dead"):
+		return
+	
 	set_behaviour_state("Wander")
 	
 	var dest_pos = _get_rdm_wander_position()
@@ -89,13 +97,16 @@ func wander() -> void:
 
 
 func _chase(node: KinematicBody2D) -> void:
+	if is_behaviour_state("Dead"):
+		return
+	
 	set_behaviour_state("Chase")
 	target = node
 	_update_chase_path()
 
 
 func _update_chase_path() -> void:
-	if target == null:
+	if target == null or is_behaviour_state("Dead"):
 		return
 	
 	path = get_parent().get_simple_path(get_global_position(), target.get_global_position())
@@ -103,9 +114,8 @@ func _update_chase_path() -> void:
 
 func _get_rdm_wander_position() -> Vector2:
 	var result_pos = -Vector2.ONE
-	var screen_rect = Rect2(Vector2.ZERO, GAME.screen_size)
 	
-	while(!screen_rect.has_point(result_pos)):
+	while(!get_parent().is_position_valid(result_pos)):
 		var rdm_angle = deg2rad(rand_range(0.0, 360.0))
 		var dir = Vector2(sin(rdm_angle), cos(rdm_angle))
 		var dist = rand_range(wander_distance / 2, wander_distance)
@@ -115,11 +125,14 @@ func _get_rdm_wander_position() -> Vector2:
 
 
 func _attack() -> void:
-	if target == null or target.is_state("Die"):
+	if target == null or target.is_state("Die") or is_behaviour_state("Dead"):
 		return
 	
-	set_state("Attack")
-	set_behaviour_state("Attack")
+	$RayCast2D.set_cast_to(to_local(target.get_global_position()))
+	
+	if $RayCast2D.get_collider() == null:
+		set_state("Attack")
+		set_behaviour_state("Attack")
 
 
 func can_attack() -> bool:
@@ -133,11 +146,14 @@ func can_attack() -> bool:
 
 
 func die() -> void:
+	.die()
+	velocity = Vector2.ZERO
+	path = []
 	set_state("Fall")
 	set_behaviour_state("Dead")
 	
 	EVENTS.emit_signal("enemy_killed")
-	queue_free()
+
 
 
 #### INPUTS ####

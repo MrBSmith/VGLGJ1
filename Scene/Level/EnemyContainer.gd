@@ -1,5 +1,7 @@
 extends Navigation2D
 
+onready var walls = $Walls
+
 #### ACCESSORS ####
 
 
@@ -15,6 +17,16 @@ func _ready() -> void:
 
 #### LOGIC ####
 
+func is_position_valid(pos: Vector2) -> bool:
+	var cell = walls.world_to_map(pos)
+	var tile_id = walls.get_cellv(cell)
+	
+	if tile_id == -1:
+		return false
+	
+	var tile_name = walls.get_tileset().tile_get_name(tile_id)
+	
+	return tile_name == "EmptyTile"
 
 
 #### INPUTS ####

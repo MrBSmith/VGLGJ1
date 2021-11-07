@@ -184,6 +184,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://BabaGodotLib/Scenes/HUD/Gauge/Gauge.gd"
 }, {
+"base": "Collectable",
+"class": "HeartCollectable",
+"language": "GDScript",
+"path": "res://Scene/Collectables/HeartCollectable.gd"
+}, {
 "base": "LineContainer",
 "class": "IconsLineContainer",
 "language": "GDScript",
@@ -580,6 +585,7 @@ _global_script_class_icons={
 "GameLoader": "",
 "GameSaver": "",
 "Gauge": "",
+"HeartCollectable": "",
 "IconsLineContainer": "",
 "IconsLineData": "",
 "InteractiveObject": "",
