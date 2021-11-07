@@ -18,6 +18,9 @@ func _ready() -> void:
 #### LOGIC ####
 
 func is_position_valid(pos: Vector2) -> bool:
+	if walls == null:
+		return true
+	
 	var cell = walls.world_to_map(pos)
 	var tile_id = walls.get_cellv(cell)
 	

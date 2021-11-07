@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=2]
+[gd_scene load_steps=38 format=2]
 
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateLabel.gd" type="Script" id=1]
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateMachine.gd" type="Script" id=2]
@@ -7,6 +7,8 @@
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/AbstractStates/AnimatedObjectStateBase.gd" type="Script" id=5]
 [ext_resource path="res://Scene/Actors/Enemies/Squid/Pieuvre.png" type="Texture" id=6]
 [ext_resource path="res://Scene/Actors/Enemies/Squid/Squid.gd" type="Script" id=7]
+[ext_resource path="res://Scene/Actors/Enemies/Squid/SquidAttackState.gd" type="Script" id=8]
+[ext_resource path="res://Scene/Actors/Enemies/EnemiesHurtState.gd" type="Script" id=9]
 
 [sub_resource type="Shader" id=29]
 resource_local_to_scene = true
@@ -120,9 +122,9 @@ animations = [ {
 "speed": 5.0
 }, {
 "frames": [ SubResource( 40 ), SubResource( 41 ), SubResource( 42 ), SubResource( 43 ), SubResource( 44 ) ],
-"loop": true,
+"loop": false,
 "name": "Die",
-"speed": 5.0
+"speed": 13.0
 }, {
 "frames": [ SubResource( 45 ), SubResource( 46 ), SubResource( 47 ), SubResource( 48 ) ],
 "loop": true,
@@ -160,66 +162,6 @@ func enter_state() -> void:
 
 
 #### SIGNAL RESPONSES ####
-"
-
-[sub_resource type="GDScript" id=3]
-script/source = "extends StateBase
-
-export var min_cooldown : float = 2.0
-export var max_cooldown : float = 3.0
-
-#### ACCESSORS ####
-
-func is_class(value: String): return value == \"\" or .is_class(value)
-func get_class() -> String: return \"\"
-
-
-#### BUILT-IN ####
-
-func _ready() -> void:
-	pass
-
-#### VIRTUALS ####
-
-
-
-#### LOGIC ####
-
-func enter_state() -> void:
-	owner.path = PoolVector2Array()
-	owner.velocity = Vector2.ZERO
-	$Preparation.start()
-
-
-func exit_state() -> void:
-	if owner == null:
-		return
-	
-	$AttackCooldown.start(rand_range(min_cooldown, max_cooldown))
-	owner.set_collision_mask(0)
-
-
-
-#### INPUTS ####
-
-
-
-#### SIGNAL RESPONSES ####
-
-
-func _on_Preparation_timeout() -> void:
-	if owner == null:
-		return
-	
-	if owner.target == null:
-		owner.set_behaviour_state(\"Wander\")
-		return
-	
-	var dir = owner.get_global_position().direction_to(owner.target.get_global_position())
-	
-	owner.velocity = dir * owner.DASH_SPEED
-	$AttackDuration.start()
-	owner.set_collision_mask(1)
 "
 
 [sub_resource type="GDScript" id=28]
@@ -294,7 +236,11 @@ radius = 122.843
 radius = 308.535
 
 [node name="Squid" instance=ExtResource( 3 )]
+collision_layer = 4
+collision_mask = 9
 script = ExtResource( 7 )
+max_hp = 3
+points = 500
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="." index="1"]
 material = SubResource( 30 )
@@ -317,14 +263,8 @@ script = SubResource( 2 )
 [node name="WaitTimer" type="Timer" parent="BehaviourState/Wander" index="0"]
 one_shot = true
 
-[node name="Chase" type="Node" parent="BehaviourState" index="1"]
-script = ExtResource( 4 )
-
-[node name="ChasePathUpdateTimer" type="Timer" parent="BehaviourState/Chase" index="0"]
-wait_time = 0.05
-
-[node name="Attack" type="Node" parent="BehaviourState" index="2"]
-script = SubResource( 3 )
+[node name="Attack" type="Node" parent="BehaviourState" index="1"]
+script = ExtResource( 8 )
 
 [node name="AttackCooldown" type="Timer" parent="BehaviourState/Attack" index="0"]
 one_shot = true
@@ -332,6 +272,12 @@ one_shot = true
 [node name="Preparation" type="Timer" parent="BehaviourState/Attack" index="1"]
 wait_time = 0.7
 one_shot = true
+
+[node name="Chase" type="Node" parent="BehaviourState" index="2"]
+script = ExtResource( 4 )
+
+[node name="ChasePathUpdateTimer" type="Timer" parent="BehaviourState/Chase" index="0"]
+wait_time = 0.05
 
 [node name="Dead" type="Node" parent="BehaviourState" index="3"]
 script = SubResource( 28 )
@@ -360,11 +306,20 @@ script = ExtResource( 5 )
 script = ExtResource( 5 )
 
 [node name="Hurt" type="Node" parent="StatesMachine" index="3"]
-script = ExtResource( 5 )
-toggle_state_mode = true
+script = ExtResource( 9 )
 
 [node name="Die" type="Node" parent="StatesMachine" index="4"]
 script = SubResource( 27 )
+
+[node name="StateLabel" type="Label" parent="StatesMachine" index="5"]
+margin_left = -19.6653
+margin_top = -28.4678
+margin_right = 20.3347
+margin_bottom = -14.4678
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="AggroArea" type="Area2D" parent="." index="5"]
 visible = false
@@ -403,4 +358,5 @@ __meta__ = {
 enabled = true
 collision_mask = 8
 
-[connection signal="timeout" from="BehaviourState/Attack/Preparation" to="BehaviourState/Attack" method="_on_Preparation_timeout"]
+[connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_AnimatedSprite_animation_finished"]
+[connection signal="body_exited" from="AttackArea" to="." method="_on_AttackArea_body_exited"]

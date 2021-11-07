@@ -3,13 +3,14 @@ extends EventsBase
 # warnings-disable
 
 signal collect_kunai()
-signal spawn_kunai(pos, dir)
 signal nb_kunai_changed(nb_kunai)
+
+signal spawn_projectile(projectile_type, pos, dir)
 
 signal hp_changed(hp)
 
 signal enemy_spawn_query(enemy, position)
-signal enemy_killed()
+signal enemy_killed(points)
 
 signal score_changed(score)
 

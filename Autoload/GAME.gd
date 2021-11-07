@@ -17,8 +17,6 @@ var enemy_dict : Dictionary = {
 const TILE_SIZE = Vector2(16.0, 16.0)
 var screen_size = Vector2(640, 360)
 
-const KILL_SCORE_BONUS = 100
-
 var kill_counter : int = 0
 var gameover_scene = preload("res://Scene/UI/GameOver/GameOver.tscn")
 
@@ -66,11 +64,11 @@ func _ready() -> void:
 #### SIGNAL RESPONSES ####
 
 
-func _on_EVENTS_enemy_killed() -> void:
+func _on_EVENTS_enemy_killed(points: int) -> void:
 	total_enemies_killed += 1
 	kill_counter += 1
 	$ScoreMultiplierTimer.start()
-	set_score(score + int(KILL_SCORE_BONUS * score_multiplier))
+	set_score(score + int(points * score_multiplier))
 	
 	if kill_counter >= 5:
 		combo = true

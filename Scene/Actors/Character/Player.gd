@@ -168,7 +168,7 @@ func _throw_kunai() -> void:
 	
 	var mouse_pos = get_local_mouse_position()
 	set_nb_kunai(nb_kunai - 1)
-	EVENTS.emit_signal("spawn_kunai", position, mouse_pos.normalized())
+	EVENTS.emit_signal("spawn_projectile", "Kunai", position, mouse_pos.normalized())
 
 
 func is_near_wall() -> bool:

@@ -57,7 +57,7 @@ func die() -> void:
 	set_state("Fall")
 	set_behaviour_state("Dead")
 	
-	EVENTS.emit_signal("enemy_killed")
+	EVENTS.emit_signal("enemy_killed", points)
 
 
 #### LOGIC ####

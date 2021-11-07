@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/KunaiProjectile.png-abafd73c0c01093f838d7f260f9fa641.stex"
+path="res://.import/KunaiProjectile.png-41601ae26d0dcfdfbf7af2a6f38e0b3c.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scene/Kunai/KunaiProjectile.png"
-dest_files=[ "res://.import/KunaiProjectile.png-abafd73c0c01093f838d7f260f9fa641.stex" ]
+source_file="res://Scene/Projectiles/Kunai/KunaiProjectile.png"
+dest_files=[ "res://.import/KunaiProjectile.png-41601ae26d0dcfdfbf7af2a6f38e0b3c.stex" ]
 
 [params]
 
@@ -28,6 +28,7 @@ process/fix_alpha_border=true
 process/premult_alpha=false
 process/HDR_as_SRGB=false
 process/invert_color=false
+process/normal_map_invert_y=false
 stream=false
 size_limit=0
 detect_3d=false

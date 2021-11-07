@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=2]
+[gd_scene load_steps=33 format=2]
 
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateLabel.gd" type="Script" id=1]
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateMachine.gd" type="Script" id=2]
@@ -7,6 +7,8 @@
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/AbstractStates/AnimatedObjectStateBase.gd" type="Script" id=5]
 [ext_resource path="res://Scene/Actors/Enemies/Bat/Bat.gd" type="Script" id=6]
 [ext_resource path="res://Scene/Actors/Enemies/Bat/bat_SpriteSheet.png" type="Texture" id=7]
+[ext_resource path="res://Scene/Actors/Enemies/Bat/BatAttackState.gd" type="Script" id=8]
+[ext_resource path="res://Scene/Actors/Enemies/EnemiesHurtState.gd" type="Script" id=9]
 
 [sub_resource type="Shader" id=19]
 resource_local_to_scene = true
@@ -146,67 +148,6 @@ func enter_state() -> void:
 #### SIGNAL RESPONSES ####
 "
 
-[sub_resource type="GDScript" id=3]
-script/source = "extends StateBase
-
-
-export var min_cooldown : float = 2.0
-export var max_cooldown : float = 3.0
-
-#### ACCESSORS ####
-
-func is_class(value: String): return value == \"\" or .is_class(value)
-func get_class() -> String: return \"\"
-
-
-#### BUILT-IN ####
-
-func _ready() -> void:
-	var __ = $Preparation.connect(\"timeout\", self, \"_on_Preparation_timeout\")
-
-#### VIRTUALS ####
-
-
-
-#### LOGIC ####
-
-func enter_state() -> void:
-	owner.path = PoolVector2Array()
-	owner.velocity = Vector2.ZERO
-	$Preparation.start()
-
-
-func exit_state() -> void:
-	if owner == null:
-		return
-	
-	$AttackCooldown.start(rand_range(min_cooldown, max_cooldown))
-	owner.set_collision_mask(0)
-
-
-
-#### INPUTS ####
-
-
-
-#### SIGNAL RESPONSES ####
-
-
-func _on_Preparation_timeout() -> void:
-	if owner == null:
-		return
-	
-	if owner.target == null:
-		owner.set_behaviour_state(\"Wander\")
-		return
-	
-	var dir = owner.get_global_position().direction_to(owner.target.get_global_position())
-	
-	owner.velocity = dir * owner.DASH_SPEED
-	$AttackDuration.start()
-	owner.set_collision_mask(1)
-"
-
 [sub_resource type="GDScript" id=28]
 script/source = "extends StateBase
 
@@ -310,7 +251,7 @@ script = ExtResource( 4 )
 wait_time = 0.05
 
 [node name="Attack" type="Node" parent="BehaviourState" index="2"]
-script = SubResource( 3 )
+script = ExtResource( 8 )
 
 [node name="AttackCooldown" type="Timer" parent="BehaviourState/Attack" index="0"]
 one_shot = true
@@ -350,8 +291,7 @@ script = ExtResource( 5 )
 script = ExtResource( 5 )
 
 [node name="Hurt" type="Node" parent="StatesMachine" index="3"]
-script = ExtResource( 5 )
-toggle_state_mode = true
+script = ExtResource( 9 )
 
 [node name="Fall" type="Node" parent="StatesMachine" index="4"]
 script = ExtResource( 5 )

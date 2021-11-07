@@ -145,7 +145,7 @@ func _on_EVENTS_spawn_heart(pos: Vector2) -> void:
 	call_deferred("add_child", heart)
 
 
-func _on_EVENTS_enemy_killed() -> void:
+func _on_EVENTS_enemy_killed(_points: int) -> void:
 	if current_difficulty == null:
 		return
 	

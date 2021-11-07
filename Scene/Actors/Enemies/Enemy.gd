@@ -1,6 +1,8 @@
 extends Actor
 class_name Enemy
 
+export var points : int = 100
+
 export var speed : float = 150.0
 
 onready var wanter_wait_timer = $BehaviourState/Wander/WaitTimer
@@ -38,7 +40,7 @@ func _ready() -> void:
 	__ = $BehaviourState/Chase/ChasePathUpdateTimer.connect("timeout", self, "_on_ChasePathUpdateTimer_timeout")
 	__ = $AttackArea.connect("body_entered", self, "_on_AttackArea_body_entered")
 	__ = $BehaviourState/Attack/AttackCooldown.connect("timeout", self, "_on_AttackCooldown_timeout")
-
+	__ = $StatesMachine/Hurt.connect("state_animation_finished", self, "_on_Hurt_state_animation_finished")
 
 #### VIRTUALS ####
 
@@ -109,6 +111,7 @@ func _get_rdm_wander_position() -> Vector2:
 
 func die() -> void:
 	var rng = Math.randi_range(0, 30 * (GAME.difficulty + 1))
+	
 	if rng == 0:
 		EVENTS.emit_signal("spawn_heart", get_global_position())
 
@@ -126,6 +129,11 @@ func can_attack() -> bool:
 		return false
 	
 	return true
+
+
+func _attack() -> void:
+	set_behaviour_state("Attack")
+	set_state("Attack")
 
 
 #### INPUTS ####
@@ -151,7 +159,7 @@ func _on_path_finished() -> void:
 
 
 func _on_ViewFieldArea_body_exited(body: Node) -> void:
-	if body is Player:
+	if body is Player && !is_behaviour_state("Dead"):
 		target = null
 		wander()
 
@@ -162,10 +170,16 @@ func _on_ChasePathUpdateTimer_timeout() -> void:
 
 
 func _on_AttackArea_body_entered(body: Node) -> void:
-	if body is Player && can_attack():
+	if body is Player && can_attack() && !is_behaviour_state("Dead"):
+		target = body
 		_attack()
 
 
 func _on_AttackCooldown_timeout() -> void:
-	if can_attack():
+	if can_attack() && !is_behaviour_state("Dead"):
 		_attack()
+
+
+func _on_Hurt_state_animation_finished() -> void:
+	if hp <= 0:
+		die()

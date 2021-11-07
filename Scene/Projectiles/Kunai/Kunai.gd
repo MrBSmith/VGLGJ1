@@ -1,18 +1,12 @@
-extends KinematicBody2D
+extends Projectile
 class_name Kunai
 
-var gravity : float = ProjectSettings.get_setting("physics/2d/default_gravity")
-const SPEED = 2000.0
 
-var direction := Vector2.ZERO setget set_direction
-var velocity := Vector2.ZERO
 
 #### ACCESSORS ####
 
 func is_class(value: String): return value == "Kunai" or .is_class(value)
 func get_class() -> String: return "Kunai"
-
-func set_direction(value: Vector2) -> void: direction = value
 
 func set_state(value: String) -> void: $StatesMachine.set_state(value)
 func is_state(value: String) -> bool: return $StatesMachine.get_state_name() == value
@@ -26,7 +20,7 @@ func _physics_process(delta: float) -> void:
 	if is_state("Fall"):
 		velocity.y += gravity
 	else:
-		velocity = direction * SPEED
+		velocity = direction * speed
 	
 	var collision = move_and_collide(velocity * delta)
 	
