@@ -131,6 +131,13 @@ func can_attack() -> bool:
 	return false
 
 
+
+func die() -> void:
+	set_state("Die")
+	queue_free()
+	EVENTS.emit_signal("enemy_killed")
+
+
 #### INPUTS ####
 
 

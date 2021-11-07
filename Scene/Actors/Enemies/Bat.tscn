@@ -133,6 +133,9 @@ one_shot = true
 [node name="AttackDuration" type="Timer" parent="StatesMachine/Attack"]
 wait_time = 0.13
 
+[node name="Die" type="Node" parent="StatesMachine"]
+script = ExtResource( 3 )
+
 [node name="StateLabel" type="Label" parent="StatesMachine"]
 margin_left = -20.6017
 margin_top = -29.217

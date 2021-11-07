@@ -63,13 +63,14 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if is_state("Hurt"):
+		return
+	
 	if is_on_floor() && get_state_name() in ["Fall", "Jump"]:
 		emit_signal("touch_floor")
 	
 	if is_state("Dash"):
 		var collision = move_and_collide(velocity * delta)
-		if collision != null:
-			update_state()
 	else:
 		_compute_velocity()
 		set_velocity(move_and_slide(velocity, Vector2.UP, true, 4, deg2rad(1), false))
@@ -198,9 +199,23 @@ func _is_dash_available() -> bool:
 	return !is_state("Dash") and (dash_cooldown.is_stopped() or dash_cooldown.is_paused())
 
 
+func die() -> void:
+	set_state("Die")
+	set_physics_process(false)
+
+
+func hurt() -> void:
+	set_state("Hurt")
+	.hurt()
+
+
+
 #### INPUTS ####
 
 func _input(event: InputEvent) -> void:
+	if is_state("Die"):
+		return
+	
 	if !wall_impulse:
 		_update_direction()
 	
