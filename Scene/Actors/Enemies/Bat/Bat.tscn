@@ -59,14 +59,6 @@ region = Rect2( 64, 0, 32, 32 )
 atlas = SubResource( 20 )
 region = Rect2( 96, 0, 32, 32 )
 
-[sub_resource type="AtlasTexture" id=26]
-atlas = ExtResource( 7 )
-region = Rect2( 96, 32, 32, 32 )
-
-[sub_resource type="AtlasTexture" id=25]
-atlas = ExtResource( 7 )
-region = Rect2( 32, 64, 32, 32 )
-
 [sub_resource type="AtlasTexture" id=21]
 atlas = ExtResource( 7 )
 region = Rect2( 0, 32, 32, 32 )
@@ -78,6 +70,14 @@ region = Rect2( 32, 32, 32, 32 )
 [sub_resource type="AtlasTexture" id=23]
 atlas = ExtResource( 7 )
 region = Rect2( 64, 32, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=26]
+atlas = ExtResource( 7 )
+region = Rect2( 96, 32, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=25]
+atlas = ExtResource( 7 )
+region = Rect2( 32, 64, 32, 32 )
 
 [sub_resource type="AtlasTexture" id=24]
 atlas = ExtResource( 7 )
@@ -95,6 +95,11 @@ animations = [ {
 "name": "Idle",
 "speed": 13.0
 }, {
+"frames": [ SubResource( 21 ), SubResource( 22 ), SubResource( 23 ) ],
+"loop": true,
+"name": "Attack",
+"speed": 15.0
+}, {
 "frames": [ SubResource( 26 ) ],
 "loop": true,
 "name": "Hurt",
@@ -104,11 +109,6 @@ animations = [ {
 "loop": true,
 "name": "Die",
 "speed": 5.0
-}, {
-"frames": [ SubResource( 21 ), SubResource( 22 ), SubResource( 23 ) ],
-"loop": true,
-"name": "Attack",
-"speed": 15.0
 }, {
 "frames": [ SubResource( 24 ) ],
 "loop": true,
@@ -262,6 +262,10 @@ one_shot = true
 
 [node name="Preparation" type="Timer" parent="BehaviourState/Attack" index="2"]
 wait_time = 0.7
+one_shot = true
+
+[node name="NewAttemptTimer" type="Timer" parent="BehaviourState/Attack" index="3"]
+wait_time = 1.8
 one_shot = true
 
 [node name="Dead" type="Node" parent="BehaviourState" index="3"]

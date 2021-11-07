@@ -145,13 +145,10 @@ func _dash() -> void:
 	var dir := Vector2.ZERO
 	var mouse_pos = get_local_mouse_position()
 	
-	if is_on_floor() or is_state("Move"):
-		if mouse_pos.x > 0:
-			dir = Vector2.RIGHT
-		else:
-			dir = Vector2.LEFT
-	else:
-		dir = mouse_pos.normalized()
+	dir = mouse_pos.normalized()
+	
+	if is_on_floor():
+		dir.y = clamp(dir.y, -1.0, 0.0)
 	
 	set_facing_direction(int(sign(dir.x)))
 	set_state("Dash")
@@ -207,6 +204,7 @@ func die() -> void:
 
 func hurt() -> void:
 	EVENTS.emit_signal("screen_shake", 3.0, 0.4)
+	EVENTS.emit_signal("player_hurt")
 	.hurt()
 
 #### INPUTS ####

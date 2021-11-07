@@ -8,6 +8,7 @@ signal nb_kunai_changed(nb_kunai)
 signal spawn_projectile(projectile_type, pos, dir)
 
 signal hp_changed(hp)
+signal player_hurt()
 
 signal enemy_spawn_query(enemy, position)
 signal enemy_killed(points)

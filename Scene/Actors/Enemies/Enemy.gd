@@ -5,6 +5,7 @@ export var points : int = 100
 
 export var speed : float = 150.0
 
+onready var new_attack_attempt_timer = $BehaviourState/Attack/NewAttemptTimer
 onready var wanter_wait_timer = $BehaviourState/Wander/WaitTimer
 onready var attack_cooldown = $BehaviourState/Attack/AttackCooldown
 
@@ -13,7 +14,7 @@ export var min_wander_wait_time : float = 1.0
 export var max_wander_wait_time : float = 4.0
 
 var path := PoolVector2Array()
-var target : KinematicBody2D = null
+var target : KinematicBody2D = null setget set_target
 
 signal path_finished
 
@@ -28,6 +29,8 @@ func get_behaviour_state() -> StateBase: return $BehaviourState.get_state()
 func get_behaviour_state_name() -> String: return $BehaviourState.get_state_name()
 func is_behaviour_state(value: String) -> bool: return get_behaviour_state_name() == value
 
+func set_target(value: KinematicBody2D) -> void:
+	target = value
 
 #### BUILT-IN ####
 
@@ -41,6 +44,7 @@ func _ready() -> void:
 	__ = $AttackArea.connect("body_entered", self, "_on_AttackArea_body_entered")
 	__ = $BehaviourState/Attack/AttackCooldown.connect("timeout", self, "_on_AttackCooldown_timeout")
 	__ = $StatesMachine/Hurt.connect("state_animation_finished", self, "_on_Hurt_state_animation_finished")
+	__ = new_attack_attempt_timer.connect("timeout", self, "_on_NewAttemptTimer_timeout")
 
 #### VIRTUALS ####
 
@@ -82,11 +86,11 @@ func wander() -> void:
 
 
 func _chase(node: KinematicBody2D) -> void:
-	if is_behaviour_state("Dead"):
+	if is_behaviour_state("Dead") or node == null:
 		return
 	
 	set_behaviour_state("Chase")
-	target = node
+	set_target(node)
 	_update_chase_path()
 
 
@@ -131,6 +135,17 @@ func can_attack() -> bool:
 	return true
 
 
+func _attack_attempt() -> void:
+	if is_behaviour_state("Dead"):
+		return
+	
+	new_attack_attempt_timer.start()
+	
+	if can_attack():
+		_attack()
+
+
+
 func _attack() -> void:
 	set_behaviour_state("Attack")
 	set_state("Attack")
@@ -160,7 +175,7 @@ func _on_path_finished() -> void:
 
 func _on_ViewFieldArea_body_exited(body: Node) -> void:
 	if body is Player && !is_behaviour_state("Dead"):
-		target = null
+		set_target(null)
 		wander()
 
 
@@ -170,16 +185,18 @@ func _on_ChasePathUpdateTimer_timeout() -> void:
 
 
 func _on_AttackArea_body_entered(body: Node) -> void:
-	if body is Player && can_attack() && !is_behaviour_state("Dead"):
-		target = body
-		_attack()
+	if body is Player:
+		_attack_attempt()
 
 
 func _on_AttackCooldown_timeout() -> void:
-	if can_attack() && !is_behaviour_state("Dead"):
-		_attack()
+	_attack_attempt()
 
 
 func _on_Hurt_state_animation_finished() -> void:
 	if hp <= 0:
 		die()
+
+
+func _on_NewAttemptTimer_timeout() -> void:
+	_attack_attempt()

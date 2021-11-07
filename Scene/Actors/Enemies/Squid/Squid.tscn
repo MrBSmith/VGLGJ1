@@ -64,6 +64,22 @@ region = Rect2( 96, 0, 48, 48 )
 atlas = ExtResource( 6 )
 region = Rect2( 144, 0, 48, 48 )
 
+[sub_resource type="AtlasTexture" id=45]
+atlas = ExtResource( 6 )
+region = Rect2( 96, 96, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=46]
+atlas = ExtResource( 6 )
+region = Rect2( 144, 96, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=47]
+atlas = ExtResource( 6 )
+region = Rect2( 0, 144, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=48]
+atlas = ExtResource( 6 )
+region = Rect2( 48, 144, 48, 48 )
+
 [sub_resource type="AtlasTexture" id=39]
 atlas = ExtResource( 6 )
 region = Rect2( 0, 48, 48, 48 )
@@ -88,22 +104,6 @@ region = Rect2( 0, 96, 48, 48 )
 atlas = ExtResource( 6 )
 region = Rect2( 48, 96, 48, 48 )
 
-[sub_resource type="AtlasTexture" id=45]
-atlas = ExtResource( 6 )
-region = Rect2( 96, 96, 48, 48 )
-
-[sub_resource type="AtlasTexture" id=46]
-atlas = ExtResource( 6 )
-region = Rect2( 144, 96, 48, 48 )
-
-[sub_resource type="AtlasTexture" id=47]
-atlas = ExtResource( 6 )
-region = Rect2( 0, 144, 48, 48 )
-
-[sub_resource type="AtlasTexture" id=48]
-atlas = ExtResource( 6 )
-region = Rect2( 48, 144, 48, 48 )
-
 [sub_resource type="SpriteFrames" id=49]
 animations = [ {
 "frames": [ SubResource( 31 ), SubResource( 32 ), SubResource( 33 ), SubResource( 34 ) ],
@@ -116,6 +116,11 @@ animations = [ {
 "name": "Idle",
 "speed": 13.0
 }, {
+"frames": [ SubResource( 45 ), SubResource( 46 ), SubResource( 47 ), SubResource( 48 ) ],
+"loop": true,
+"name": "Attack",
+"speed": 5.0
+}, {
 "frames": [ SubResource( 39 ) ],
 "loop": true,
 "name": "Hurt",
@@ -125,11 +130,6 @@ animations = [ {
 "loop": false,
 "name": "Die",
 "speed": 13.0
-}, {
-"frames": [ SubResource( 45 ), SubResource( 46 ), SubResource( 47 ), SubResource( 48 ) ],
-"loop": true,
-"name": "Attack",
-"speed": 5.0
 } ]
 
 [sub_resource type="CircleShape2D" id=50]
@@ -271,6 +271,9 @@ one_shot = true
 
 [node name="Preparation" type="Timer" parent="BehaviourState/Attack" index="1"]
 wait_time = 0.7
+one_shot = true
+
+[node name="NewAttemptTimer" type="Timer" parent="BehaviourState/Attack" index="2"]
 one_shot = true
 
 [node name="Chase" type="Node" parent="BehaviourState" index="2"]

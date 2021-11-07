@@ -29,7 +29,7 @@ func _physics_process(delta: float) -> void:
 			
 			if collider.is_class("Player"):
 				collider.hurt()
-				_chase(target)
+				_chase(collider)
 	
 	elif !path.empty():
 		set_state("Move")
@@ -73,5 +73,6 @@ func die() -> void:
 
 
 func _on_AttackDuration_timeout() -> void:
-	_chase(target)
+	if is_behaviour_state("Attack"):
+		_chase(target)
 

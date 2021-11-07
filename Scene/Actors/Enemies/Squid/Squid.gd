@@ -11,7 +11,7 @@ func get_class() -> String: return "Squid"
 #### BUILT-IN ####
 
 func _physics_process(delta: float) -> void:
-	if !path.empty():
+	if !path.empty() && !is_behaviour_state("Dead"):
 		set_state("Move")
 		_move_along_path(delta)
 
