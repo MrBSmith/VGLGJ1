@@ -1,8 +1,8 @@
 extends Enemy
 class_name Bat
 
-onready var wanter_wait_timer = $StatesMachine/Wander/WaitTimer
-onready var attack_cooldown = $StatesMachine/Attack/AttackCooldown
+onready var wanter_wait_timer = $BehaviourState/Wander/WaitTimer
+onready var attack_cooldown = $BehaviourState/Attack/AttackCooldown
 
 const SPEED = 150.0
 const DASH_SPEED : float = 600.0
@@ -26,6 +26,11 @@ func get_state() -> StateBase: return $StatesMachine.get_state()
 func get_state_name() -> String: return $StatesMachine.get_state_name()
 func is_state(value: String) -> bool: return get_state_name() == value
 
+func set_behaviour_state(state_name: String) -> void: $BehaviourState.set_state(state_name)
+func get_behaviour_state() -> StateBase: return $BehaviourState.get_state()
+func get_behaviour_state_name() -> String: return $BehaviourState.get_state_name()
+func is_behaviour_state(value: String) -> bool: return get_behaviour_state_name() == value
+
 
 #### BUILT-IN ####
 
@@ -34,17 +39,21 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	if is_state("Attack"):
+	if is_behaviour_state("Attack"):
 		var collision = move_and_collide(velocity * delta)
 		if collision != null:
 			var collider = collision.collider
 			
 			if collider.is_class("Player"):
 				collider.hurt()
-				set_state("Chase")
+				_chase(target)
 	
-	if !path.empty():
+	elif !path.empty():
+		set_state("Move")
 		_move_along_path(delta)
+	
+	elif is_on_floor() && is_state("Fall"):
+		set_state("Die")
 
 
 #### VIRTUALS ####
@@ -71,7 +80,7 @@ func _move_along_path(delta: float) -> void:
 
 
 func wander() -> void:
-	set_state("Wander")
+	set_behaviour_state("Wander")
 	
 	var dest_pos = _get_rdm_wander_position()
 	var global_pos = get_global_position()
@@ -80,7 +89,7 @@ func wander() -> void:
 
 
 func _chase(node: KinematicBody2D) -> void:
-	set_state("Chase")
+	set_behaviour_state("Chase")
 	target = node
 	_update_chase_path()
 
@@ -110,11 +119,7 @@ func _attack() -> void:
 		return
 	
 	set_state("Attack")
-	
-	path = PoolVector2Array()
-	var dir = get_global_position().direction_to(target.get_global_position())
-	
-	velocity = dir * DASH_SPEED
+	set_behaviour_state("Attack")
 
 
 func can_attack() -> bool:
@@ -124,16 +129,13 @@ func can_attack() -> bool:
 	if !attack_cooldown.is_stopped() and !attack_cooldown.is_paused():
 		return false
 	
-	for body in $AttackArea.get_overlapping_bodies():
-		if body is Player:
-			return true
-	
-	return false
-
+	return true
 
 
 func die() -> void:
-	set_state("Die")
+	set_state("Fall")
+	set_behaviour_state("Dead")
+	
 	queue_free()
 	EVENTS.emit_signal("enemy_killed")
 
@@ -146,17 +148,17 @@ func die() -> void:
 
 
 func _on_WaitTimer_timeout() -> void:
-	if is_state("Wander"):
+	if is_behaviour_state("Wander"):
 		wander()
 
 
 func _on_Bat_path_finished() -> void:
-	if is_state("Wander"):
+	if is_behaviour_state("Wander"):
 		wanter_wait_timer.start(rand_range(min_wander_wait_time, max_wander_wait_time))
 
 
 func _on_AggroArea_body_entered(body: Node) -> void:
-	if body is Player:
+	if body is Player && is_behaviour_state("Wander"):
 		_chase(body)
 
 
@@ -167,7 +169,7 @@ func _on_ViewFieldArea_body_exited(body: Node) -> void:
 
 
 func _on_ChasePathUpdateTimer_timeout() -> void:
-	if is_state("Chase"):
+	if is_behaviour_state("Chase"):
 		_update_chase_path()
 
 

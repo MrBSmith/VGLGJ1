@@ -3,6 +3,7 @@ class_name Player
 
 onready var dash_cooldown = $StatesMachine/Dash/Cooldown
 
+
 const SPEED : float = 280.0
 const JUMP_FORCE : float = 450.0
 const WALL_GRAB_FALL_SPEED = 40.0
@@ -40,11 +41,6 @@ func set_facing_direction(value: int) -> void:
 		facing_direction = value
 		emit_signal("facing_direction_changed")
 
-func set_state(state_name: String) -> void:$StatesMachine.set_state(state_name)
-func get_state() -> StateBase: return $StatesMachine.get_state()
-func get_state_name() -> String: return $StatesMachine.get_state_name()
-func is_state(value: String) -> bool: return get_state_name() == value
-
 func set_wall_impulse(value: bool) -> void:
 	if value != wall_impulse:
 		wall_impulse = value
@@ -71,11 +67,14 @@ func _physics_process(delta: float) -> void:
 	
 	if is_state("Dash"):
 		var collision = move_and_collide(velocity * delta)
+		
+		if collision != null:
+			update_state()
 	else:
 		_compute_velocity()
 		set_velocity(move_and_slide(velocity, Vector2.UP, true, 4, deg2rad(1), false))
 		
-		if !is_state("Attack"):
+		if !is_state("Attack") && !is_state("Die"):
 			update_state()
 
 
@@ -146,7 +145,7 @@ func _dash() -> void:
 	var dir := Vector2.ZERO
 	var mouse_pos = get_local_mouse_position()
 	
-	if is_on_floor():
+	if is_on_floor() or is_state("Move"):
 		if mouse_pos.x > 0:
 			dir = Vector2.RIGHT
 		else:
@@ -201,12 +200,7 @@ func _is_dash_available() -> bool:
 
 func die() -> void:
 	set_state("Die")
-	set_physics_process(false)
-
-
-func hurt() -> void:
-	set_state("Hurt")
-	.hurt()
+	set_direction(0)
 
 
 
@@ -290,3 +284,4 @@ func _on_Player_touch_floor() -> void:
 
 func _on_Player_wall_impulse_changed() -> void:
 	_update_direction()
+

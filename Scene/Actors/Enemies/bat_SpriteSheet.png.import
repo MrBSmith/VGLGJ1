@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Heart.png-c0c7437ecab9199b0566409012bae899.stex"
+path="res://.import/bat_SpriteSheet.png-222be466eacc4ab756ab2b3f75ba3dd3.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scene/UI/HUD/Heart.png"
-dest_files=[ "res://.import/Heart.png-c0c7437ecab9199b0566409012bae899.stex" ]
+source_file="res://Scene/Actors/Enemies/bat_SpriteSheet.png"
+dest_files=[ "res://.import/bat_SpriteSheet.png-222be466eacc4ab756ab2b3f75ba3dd3.stex" ]
 
 [params]
 

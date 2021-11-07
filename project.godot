@@ -663,7 +663,7 @@ config/icon="res://icon.png"
 [autoload]
 
 EVENTS="*res://Autoload/EVENTS.gd"
-GAME="*res://Autoload/GAME.gd"
+GAME="*res://Autoload/Game.tscn"
 
 [display]
 

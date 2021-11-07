@@ -1,10 +1,116 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=30 format=2]
 
-[ext_resource path="res://Scene/Actors/Enemies/Bat.gd" type="Script" id=1]
+[ext_resource path="res://Scene/Actors/Actor.tscn" type="PackedScene" id=1]
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateLabel.gd" type="Script" id=2]
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateBase.gd" type="Script" id=3]
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateMachine.gd" type="Script" id=4]
-[ext_resource path="res://Scene/Actors/Enemies/bat.png" type="Texture" id=5]
+[ext_resource path="res://Scene/Actors/Enemies/bat_SpriteSheet.png" type="Texture" id=5]
+[ext_resource path="res://Scene/Actors/Enemies/Bat.gd" type="Script" id=6]
+[ext_resource path="res://BabaGodotLib/Absract/StateMachine/AbstractStates/AnimatedObjectStateBase.gd" type="Script" id=7]
+
+[sub_resource type="Shader" id=19]
+code = "shader_type canvas_item;
+
+uniform vec4 flash_color : hint_color = vec4(1.0);
+uniform float mix_amount = 0.0;
+
+void fragment(){
+	vec4 color = texture(TEXTURE, UV);
+	if (color.a != 0.0){
+		COLOR = mix(flash_color, color, 1.0 - mix_amount);
+	} else {
+		COLOR = color;
+	} 
+}"
+
+[sub_resource type="ShaderMaterial" id=18]
+shader = SubResource( 19 )
+shader_param/flash_color = Color( 1, 1, 1, 1 )
+shader_param/mix_amount = 0.0
+
+[sub_resource type="StreamTexture" id=20]
+load_path = "res://.import/bat_SpriteSheet.png-222be466eacc4ab756ab2b3f75ba3dd3.stex"
+
+[sub_resource type="AtlasTexture" id=11]
+atlas = SubResource( 20 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=12]
+atlas = SubResource( 20 )
+region = Rect2( 64, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=13]
+atlas = SubResource( 20 )
+region = Rect2( 96, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=7]
+atlas = SubResource( 20 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = SubResource( 20 )
+region = Rect2( 64, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=9]
+atlas = SubResource( 20 )
+region = Rect2( 96, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=21]
+atlas = ExtResource( 5 )
+region = Rect2( 0, 32, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=22]
+atlas = ExtResource( 5 )
+region = Rect2( 32, 32, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=23]
+atlas = ExtResource( 5 )
+region = Rect2( 64, 32, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=24]
+atlas = ExtResource( 5 )
+region = Rect2( 0, 64, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=25]
+atlas = ExtResource( 5 )
+region = Rect2( 32, 64, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=26]
+atlas = ExtResource( 5 )
+region = Rect2( 96, 32, 32, 32 )
+
+[sub_resource type="SpriteFrames" id=10]
+animations = [ {
+"frames": [ SubResource( 11 ), SubResource( 12 ), SubResource( 13 ) ],
+"loop": true,
+"name": "Idle",
+"speed": 13.0
+}, {
+"frames": [ SubResource( 7 ), SubResource( 8 ), SubResource( 9 ) ],
+"loop": true,
+"name": "Move",
+"speed": 13.0
+}, {
+"frames": [ SubResource( 21 ), SubResource( 22 ), SubResource( 23 ) ],
+"loop": true,
+"name": "Attack",
+"speed": 17.0
+}, {
+"frames": [ SubResource( 24 ) ],
+"loop": true,
+"name": "Fall",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 25 ) ],
+"loop": true,
+"name": "Die",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 26 ) ],
+"loop": true,
+"name": "Hurt",
+"speed": 5.0
+} ]
 
 [sub_resource type="CircleShape2D" id=1]
 radius = 3.74496
@@ -62,8 +168,9 @@ func _ready() -> void:
 #### LOGIC ####
 
 func enter_state() -> void:
-	$AttackDuration.start()
-	owner.set_collision_mask(1)
+	owner.path = PoolVector2Array()
+	owner.velocity = Vector2.ZERO
+	$Preparation.start()
 
 
 func exit_state() -> void:
@@ -80,63 +187,84 @@ func exit_state() -> void:
 
 
 #### SIGNAL RESPONSES ####
+
+
+func _on_Preparation_timeout() -> void:
+	if owner == null:
+		return
+	
+	if owner.target == null:
+		owner.set_behaviour_state(\"Wander\")
+		return
+	
+	var dir = owner.get_global_position().direction_to(owner.target.get_global_position())
+	
+	owner.velocity = dir * owner.DASH_SPEED
+	$AttackDuration.start()
+	owner.set_collision_mask(1)
 "
 
 [sub_resource type="CircleShape2D" id=4]
 radius = 163.642
 
 [sub_resource type="CircleShape2D" id=5]
-radius = 94.2915
+radius = 122.843
 
 [sub_resource type="CircleShape2D" id=6]
 radius = 308.535
 
-[node name="Bat" type="KinematicBody2D"]
+[node name="Bat" instance=ExtResource( 1 )]
 collision_layer = 4
-collision_mask = 0
-script = ExtResource( 1 )
+collision_mask = 2
+script = ExtResource( 6 )
 
-[node name="Sprite" type="Sprite" parent="."]
-texture = ExtResource( 5 )
+[node name="AnimatedSprite" type="AnimatedSprite" parent="." index="1"]
+material = SubResource( 18 )
+frames = SubResource( 10 )
+animation = "Idle"
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="2"]
 shape = SubResource( 1 )
 
-[node name="StatesMachine" type="Node2D" parent="."]
+[node name="BehaviourState" type="Node2D" parent="." index="3"]
 script = ExtResource( 4 )
 
-[node name="Wander" type="Node" parent="StatesMachine"]
+[node name="Wander" type="Node" parent="BehaviourState" index="0"]
 script = SubResource( 2 )
 
-[node name="WaitTimer" type="Timer" parent="StatesMachine/Wander"]
+[node name="WaitTimer" type="Timer" parent="BehaviourState/Wander" index="0"]
 one_shot = true
 
-[node name="Chase" type="Node" parent="StatesMachine"]
+[node name="Chase" type="Node" parent="BehaviourState" index="1"]
 script = ExtResource( 3 )
 
-[node name="ChasePathUpdateTimer" type="Timer" parent="StatesMachine/Chase"]
+[node name="ChasePathUpdateTimer" type="Timer" parent="BehaviourState/Chase" index="0"]
 wait_time = 0.05
 
-[node name="Hurt" type="Node" parent="StatesMachine"]
+[node name="Hurt" type="Node" parent="BehaviourState" index="2"]
 script = ExtResource( 3 )
 
-[node name="Attack" type="Node" parent="StatesMachine"]
+[node name="Attack" type="Node" parent="BehaviourState" index="3"]
 script = SubResource( 3 )
 
-[node name="AttackCooldown" type="Timer" parent="StatesMachine/Attack"]
-wait_time = 2.0
+[node name="AttackCooldown" type="Timer" parent="BehaviourState/Attack" index="0"]
 one_shot = true
 
-[node name="AttackDuration" type="Timer" parent="StatesMachine/Attack"]
+[node name="AttackDuration" type="Timer" parent="BehaviourState/Attack" index="1"]
 wait_time = 0.13
+one_shot = true
 
-[node name="Die" type="Node" parent="StatesMachine"]
+[node name="Preparation" type="Timer" parent="BehaviourState/Attack" index="2"]
+wait_time = 0.7
+one_shot = true
+
+[node name="Dead" type="Node" parent="BehaviourState" index="4"]
 script = ExtResource( 3 )
 
-[node name="StateLabel" type="Label" parent="StatesMachine"]
+[node name="StateLabel" type="Label" parent="BehaviourState" index="5"]
 margin_left = -20.6017
 margin_top = -29.217
 margin_right = 19.3983
@@ -146,46 +274,66 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="AggroArea" type="Area2D" parent="."]
+[node name="StatesMachine" type="Node2D" parent="." index="4"]
+script = ExtResource( 4 )
+
+[node name="Idle" type="Node" parent="StatesMachine" index="0"]
+script = ExtResource( 7 )
+
+[node name="Move" type="Node" parent="StatesMachine" index="1"]
+script = ExtResource( 7 )
+
+[node name="Attack" type="Node" parent="StatesMachine" index="2"]
+script = ExtResource( 7 )
+
+[node name="Hurt" type="Node" parent="StatesMachine" index="3"]
+script = ExtResource( 7 )
+toggle_state_mode = true
+
+[node name="Fall" type="Node" parent="StatesMachine" index="4"]
+script = ExtResource( 7 )
+
+[node name="Die" type="Node" parent="StatesMachine" index="5"]
+script = ExtResource( 7 )
+
+[node name="AggroArea" type="Area2D" parent="." index="5"]
 visible = false
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="AggroArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AggroArea" index="0"]
 shape = SubResource( 4 )
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="AttackArea" type="Area2D" parent="."]
-visible = false
+[node name="AttackArea" type="Area2D" parent="." index="6"]
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" index="0"]
 shape = SubResource( 5 )
-__meta__ = {
-"_edit_lock_": true
-}
 
-[node name="ViewFieldArea" type="Area2D" parent="."]
+[node name="ViewFieldArea" type="Area2D" parent="." index="7"]
 visible = false
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ViewFieldArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ViewFieldArea" index="0"]
 shape = SubResource( 6 )
 __meta__ = {
 "_edit_lock_": true
 }
 
-[connection signal="timeout" from="StatesMachine/Wander/WaitTimer" to="." method="_on_WaitTimer_timeout"]
-[connection signal="timeout" from="StatesMachine/Chase/ChasePathUpdateTimer" to="." method="_on_ChasePathUpdateTimer_timeout"]
-[connection signal="timeout" from="StatesMachine/Attack/AttackCooldown" to="." method="_on_AttackCooldown_timeout"]
-[connection signal="timeout" from="StatesMachine/Attack/AttackDuration" to="." method="_on_AttackDuration_timeout"]
+[connection signal="path_finished" from="." to="." method="_on_Bat_path_finished"]
+[connection signal="timeout" from="BehaviourState/Wander/WaitTimer" to="." method="_on_WaitTimer_timeout"]
+[connection signal="timeout" from="BehaviourState/Chase/ChasePathUpdateTimer" to="." method="_on_ChasePathUpdateTimer_timeout"]
+[connection signal="timeout" from="BehaviourState/Attack/AttackCooldown" to="." method="_on_AttackCooldown_timeout"]
+[connection signal="timeout" from="BehaviourState/Attack/AttackDuration" to="." method="_on_AttackDuration_timeout"]
+[connection signal="timeout" from="BehaviourState/Attack/Preparation" to="BehaviourState/Attack" method="_on_Preparation_timeout"]
 [connection signal="body_entered" from="AggroArea" to="." method="_on_AggroArea_body_entered"]
 [connection signal="body_entered" from="AttackArea" to="." method="_on_AttackArea_body_entered"]
 [connection signal="body_exited" from="ViewFieldArea" to="." method="_on_ViewFieldArea_body_exited"]

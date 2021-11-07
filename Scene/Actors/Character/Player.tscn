@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=2]
+[gd_scene load_steps=48 format=2]
 
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateLabel.gd" type="Script" id=1]
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/AbstractStates/AnimatedObjectStateBase.gd" type="Script" id=2]
@@ -9,6 +9,13 @@
 [ext_resource path="res://Scene/Actors/Character/Idle.gd" type="Script" id=7]
 [ext_resource path="res://Scene/Actors/Character/Sprites/Perso_Dash.png" type="Texture" id=8]
 [ext_resource path="res://Scene/Actors/Character/Sprites/Perso_Dash_Left.png" type="Texture" id=9]
+[ext_resource path="res://Scene/Actors/Flash.gdshader" type="Shader" id=10]
+[ext_resource path="res://Scene/Actors/Actor.tscn" type="PackedScene" id=11]
+
+[sub_resource type="ShaderMaterial" id=37]
+shader = ExtResource( 10 )
+shader_param/flash_color = Color( 1, 1, 1, 1 )
+shader_param/mix_amount = 0.0
 
 [sub_resource type="AtlasTexture" id=4]
 atlas = ExtResource( 6 )
@@ -206,10 +213,13 @@ func enter_state() -> void:
 	$Particles2D.set_texture(texture)
 	$Particles2D.set_emitting(true)
 	$DashDuration.start()
+	
+	owner.set_collision_layer(0)
 
 func exit_state() -> void:
 	.exit_state()
 	$Cooldown.start()
+	owner.set_collision_layer(1)
 
 
 #### LOGIC ####
@@ -345,56 +355,58 @@ extents = Vector2( 11.5, 14 )
 [sub_resource type="RectangleShape2D" id=32]
 extents = Vector2( 2.53905, 3.62773 )
 
-[node name="Player" type="KinematicBody2D"]
+[node name="Player" instance=ExtResource( 11 )]
+collision_mask = 8
 script = ExtResource( 3 )
 max_hp = 3
 
-[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+[node name="AnimatedSprite" type="AnimatedSprite" parent="." index="1"]
+material = SubResource( 37 )
 frames = SubResource( 21 )
 animation = "Idle"
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." index="2"]
 position = Vector2( 0, 2 )
 shape = SubResource( 22 )
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="StatesMachine" type="Node2D" parent="."]
+[node name="StatesMachine" type="Node2D" parent="." index="3"]
 script = ExtResource( 4 )
 
-[node name="Idle" type="Node" parent="StatesMachine"]
+[node name="Idle" type="Node" parent="StatesMachine" index="0"]
 script = ExtResource( 7 )
 
-[node name="Move" type="Node" parent="StatesMachine"]
+[node name="Move" type="Node" parent="StatesMachine" index="1"]
 script = SubResource( 23 )
 
-[node name="Jump" type="Node" parent="StatesMachine"]
+[node name="Jump" type="Node" parent="StatesMachine" index="2"]
 script = ExtResource( 2 )
 
-[node name="Fall" type="Node" parent="StatesMachine"]
+[node name="Fall" type="Node" parent="StatesMachine" index="3"]
 script = ExtResource( 2 )
 
-[node name="Hurt" type="Node" parent="StatesMachine"]
+[node name="Hurt" type="Node" parent="StatesMachine" index="4"]
 script = ExtResource( 2 )
 toggle_state_mode = true
 
-[node name="Dash" type="Node2D" parent="StatesMachine"]
+[node name="Dash" type="Node2D" parent="StatesMachine" index="5"]
 script = SubResource( 24 )
 right_particule = ExtResource( 8 )
 left_particule = ExtResource( 9 )
 
-[node name="DashDuration" type="Timer" parent="StatesMachine/Dash"]
+[node name="DashDuration" type="Timer" parent="StatesMachine/Dash" index="0"]
 wait_time = 0.18
 one_shot = true
 
-[node name="Cooldown" type="Timer" parent="StatesMachine/Dash"]
+[node name="Cooldown" type="Timer" parent="StatesMachine/Dash" index="1"]
 one_shot = true
 
-[node name="Particles2D" type="Particles2D" parent="StatesMachine/Dash"]
+[node name="Particles2D" type="Particles2D" parent="StatesMachine/Dash" index="2"]
 emitting = false
 lifetime = 0.18
 one_shot = true
@@ -402,31 +414,31 @@ local_coords = false
 process_material = SubResource( 36 )
 texture = ExtResource( 8 )
 
-[node name="WallGrab" type="Node" parent="StatesMachine"]
+[node name="WallGrab" type="Node" parent="StatesMachine" index="6"]
 script = SubResource( 25 )
 
-[node name="Attack" type="Node2D" parent="StatesMachine"]
+[node name="Attack" type="Node2D" parent="StatesMachine" index="7"]
 script = SubResource( 26 )
 toggle_state_mode = true
 
-[node name="AnimatedSprite" type="AnimatedSprite" parent="StatesMachine/Attack"]
+[node name="AnimatedSprite" type="AnimatedSprite" parent="StatesMachine/Attack" index="0"]
 visible = false
 frames = SubResource( 30 )
 animation = "Attack"
 offset = Vector2( 6, 0 )
 
-[node name="HitBox" type="Area2D" parent="StatesMachine/Attack/AnimatedSprite"]
+[node name="HitBox" type="Area2D" parent="StatesMachine/Attack/AnimatedSprite" index="0"]
 collision_layer = 0
 collision_mask = 4
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StatesMachine/Attack/AnimatedSprite/HitBox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StatesMachine/Attack/AnimatedSprite/HitBox" index="0"]
 position = Vector2( 13, 0 )
 shape = SubResource( 31 )
 
-[node name="Die" type="Node" parent="StatesMachine"]
+[node name="Die" type="Node" parent="StatesMachine" index="8"]
 script = ExtResource( 2 )
 
-[node name="StateLabel" type="Label" parent="StatesMachine"]
+[node name="StateLabel" type="Label" parent="StatesMachine" index="9"]
 margin_left = -20.0409
 margin_top = -27.1842
 margin_right = 19.9591
@@ -436,35 +448,35 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="JumpBufferTimer" type="Timer" parent="."]
+[node name="JumpBufferTimer" type="Timer" parent="." index="4"]
 wait_time = 0.1
 one_shot = true
 
-[node name="JumpTolerenceTimer" type="Timer" parent="."]
+[node name="JumpTolerenceTimer" type="Timer" parent="." index="5"]
 wait_time = 0.2
 one_shot = true
 
-[node name="WallDetection" type="Node2D" parent="."]
+[node name="WallDetection" type="Node2D" parent="." index="6"]
 position = Vector2( -4.5, 0 )
 
-[node name="Left" type="Area2D" parent="WallDetection"]
+[node name="Left" type="Area2D" parent="WallDetection" index="0"]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WallDetection/Left"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallDetection/Left" index="0"]
 shape = SubResource( 32 )
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="Right" type="Area2D" parent="WallDetection"]
+[node name="Right" type="Area2D" parent="WallDetection" index="1"]
 position = Vector2( 9, 0 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WallDetection/Right"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallDetection/Right" index="0"]
 shape = SubResource( 32 )
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="WallImpulseTimer" type="Timer" parent="."]
+[node name="WallImpulseTimer" type="Timer" parent="." index="7"]
 wait_time = 0.4
 one_shot = true
 
