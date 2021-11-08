@@ -16,6 +16,7 @@ func is_state(value: String) -> bool: return $StatesMachine.get_state_name() == 
 func _ready() -> void:
 	set_rotation(direction.angle())
 
+
 func _physics_process(delta: float) -> void:
 	if is_state("Fall"):
 		velocity.y += gravity
@@ -32,7 +33,7 @@ func _physics_process(delta: float) -> void:
 			set_state("Collectable")
 		else:
 			if collider.is_class("Enemy") && is_state("Projectile"):
-				collider.hurt()
+				collider.hurt(collision.position)
 				set_state("Fall")
 
 

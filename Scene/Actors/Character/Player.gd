@@ -169,7 +169,7 @@ func _throw_kunai() -> void:
 	var mouse_pos = get_local_mouse_position()
 	var dir = mouse_pos.normalized()
 	set_nb_kunai(nb_kunai - 1)
-	EVENTS.emit_signal("spawn_projectile", "Kunai", position + dir * 5.0, dir)
+	EVENTS.emit_signal("spawn_projectile", "Kunai", position + dir * 7.0, dir)
 
 
 func is_near_wall() -> bool:
@@ -206,10 +206,11 @@ func die() -> void:
 	EVENTS.emit_signal("gameover")
 
 
-func hurt() -> void:
+func hurt(impact_pos: Vector2) -> void:
 	EVENTS.emit_signal("screen_shake", 3.0, 0.4)
 	EVENTS.emit_signal("player_hurt")
-	.hurt()
+	.hurt(impact_pos)
+
 
 #### INPUTS ####
 

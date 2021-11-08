@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/NinjaTheme.ogg-4b174dc30c43a926ae18bf616dc718d5.oggstr"
+
+[deps]
+
+source_file="res://Music/NinjaTheme.ogg"
+dest_files=[ "res://.import/NinjaTheme.ogg-4b174dc30c43a926ae18bf616dc718d5.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0

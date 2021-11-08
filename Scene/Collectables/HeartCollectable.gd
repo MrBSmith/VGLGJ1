@@ -19,8 +19,19 @@ func _ready() -> void:
 #### LOGIC ####
 
 func collect(_target: Node) -> void:
+	if get_node_or_null("FollowArea") == null:
+		return
+	
+	$FollowArea.queue_free()
+
 	.collect(_target)
 	target.set_hp(target.hp + 1)
+	
+	$CollectSound.play()
+	set_visible(false)
+	
+	yield($CollectSound, "finished")
+	
 	queue_free()
 
 #### INPUTS ####

@@ -20,7 +20,7 @@ func _physics_process(delta: float) -> void:
 			_explode()
 			
 			if collider is Actor:
-				collider.hurt()
+				collider.hurt(collision.get_position())
 
 #### VIRTUALS ####
 

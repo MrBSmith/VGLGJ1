@@ -114,19 +114,24 @@ func _get_rdm_wander_position() -> Vector2:
 
 
 func die() -> void:
-	var rng = Math.randi_range(0, 30 * (GAME.difficulty + 1))
+	var rng = Math.randi_range(0, 15 * (GAME.difficulty + 1))
 	
 	if rng == 0:
 		EVENTS.emit_signal("spawn_heart", get_global_position())
+	
+	EVENTS.emit_signal("enemy_killed", points)
 
 
-func hurt() -> void:
+func hurt(impact_pos: Vector2) -> void:
+	if get_behaviour_state_name() == "Dead":
+		return
+	
 	EVENTS.emit_signal("screen_shake", 1.5, 0.25)
-	.hurt()
+	.hurt(impact_pos)
 
 
 func can_attack() -> bool:
-	if target == null:
+	if target == null or get_behaviour_state_name() == "Dead":
 		return false
 	
 	if !attack_cooldown.is_stopped() and !attack_cooldown.is_paused():
@@ -143,7 +148,6 @@ func _attack_attempt() -> void:
 	
 	if can_attack():
 		_attack()
-
 
 
 func _attack() -> void:
@@ -200,3 +204,5 @@ func _on_Hurt_state_animation_finished() -> void:
 
 func _on_NewAttemptTimer_timeout() -> void:
 	_attack_attempt()
+
+

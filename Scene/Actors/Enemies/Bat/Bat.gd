@@ -28,7 +28,7 @@ func _physics_process(delta: float) -> void:
 			var collider = collision.collider
 			
 			if collider.is_class("Player"):
-				collider.hurt()
+				collider.hurt(collision.position)
 				_chase(collider)
 	
 	elif !path.empty():
@@ -56,8 +56,6 @@ func die() -> void:
 	path = []
 	set_state("Fall")
 	set_behaviour_state("Dead")
-	
-	EVENTS.emit_signal("enemy_killed", points)
 
 
 #### LOGIC ####

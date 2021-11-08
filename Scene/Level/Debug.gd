@@ -27,7 +27,8 @@ func _ready() -> void:
 #### SIGNAL RESPONSES ####
 
 func _on_EVENTS_new_difficulty(difficulty: int) -> void:
-	$VBoxContainer/Difficulty.set_text("Current difficulty: %d" % difficulty)
+	var difficulty_name = GAME.DIFFICULTY.keys()[difficulty].to_lower().capitalize()
+	$VBoxContainer/Difficulty.set_text("Current difficulty: %s" % difficulty_name)
 
 
 func _on_EVENTS_wave_started(wave_id: int) -> void:

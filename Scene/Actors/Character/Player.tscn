@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=2]
+[gd_scene load_steps=55 format=2]
 
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateLabel.gd" type="Script" id=1]
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/AbstractStates/AnimatedObjectStateBase.gd" type="Script" id=2]
@@ -15,6 +15,8 @@
 [ext_resource path="res://Scene/Actors/Character/Sounds/Bounce.wav" type="AudioStream" id=13]
 [ext_resource path="res://Scene/Projectiles/Kunai/KnifeThrown.ogg" type="AudioStream" id=14]
 [ext_resource path="res://Scene/Actors/Character/Sounds/Dash.ogg" type="AudioStream" id=15]
+[ext_resource path="res://Scene/Actors/Character/Sounds/HurtNinja.wav" type="AudioStream" id=16]
+[ext_resource path="res://Scene/Actors/ActorHurtState.gd" type="Script" id=17]
 
 [sub_resource type="ShaderMaterial" id=37]
 shader = ExtResource( 10 )
@@ -53,6 +55,10 @@ region = Rect2( 48, 48, 16, 16 )
 atlas = ExtResource( 6 )
 region = Rect2( 64, 48, 16, 16 )
 
+[sub_resource type="AtlasTexture" id=9]
+atlas = ExtResource( 6 )
+region = Rect2( 64, 0, 16, 16 )
+
 [sub_resource type="AtlasTexture" id=7]
 atlas = ExtResource( 6 )
 region = Rect2( 16, 16, 16, 16 )
@@ -61,17 +67,13 @@ region = Rect2( 16, 16, 16, 16 )
 atlas = ExtResource( 6 )
 region = Rect2( 32, 16, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=9]
+[sub_resource type="AtlasTexture" id=38]
 atlas = ExtResource( 6 )
-region = Rect2( 64, 0, 16, 16 )
+region = Rect2( 16, 48, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=19]
 atlas = ExtResource( 6 )
 region = Rect2( 16, 48, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=20]
-atlas = ExtResource( 6 )
-region = Rect2( 16, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=14]
 atlas = ExtResource( 6 )
@@ -80,6 +82,10 @@ region = Rect2( 64, 16, 16, 16 )
 [sub_resource type="AtlasTexture" id=15]
 atlas = ExtResource( 6 )
 region = Rect2( 0, 32, 16, 16 )
+
+[sub_resource type="AtlasTexture" id=20]
+atlas = ExtResource( 6 )
+region = Rect2( 16, 0, 16, 16 )
 
 [sub_resource type="AtlasTexture" id=10]
 atlas = ExtResource( 6 )
@@ -100,10 +106,6 @@ region = Rect2( 64, 32, 16, 16 )
 [sub_resource type="AtlasTexture" id=5]
 atlas = ExtResource( 6 )
 region = Rect2( 0, 16, 16, 16 )
-
-[sub_resource type="AtlasTexture" id=38]
-atlas = ExtResource( 6 )
-region = Rect2( 16, 48, 16, 16 )
 
 [sub_resource type="SpriteFrames" id=21]
 animations = [ {
@@ -127,14 +129,19 @@ animations = [ {
 "name": "Land",
 "speed": 20.0
 }, {
+"frames": [ SubResource( 9 ) ],
+"loop": true,
+"name": "Jump",
+"speed": 5.0
+}, {
 "frames": [ SubResource( 7 ), SubResource( 8 ), SubResource( 7 ), SubResource( 8 ) ],
 "loop": true,
 "name": "Roll",
 "speed": 13.0
 }, {
-"frames": [ SubResource( 9 ) ],
+"frames": [ SubResource( 38 ) ],
 "loop": true,
-"name": "Jump",
+"name": "Throw",
 "speed": 5.0
 }, {
 "frames": [ SubResource( 19 ) ],
@@ -142,15 +149,15 @@ animations = [ {
 "name": "Attack",
 "speed": 2.0
 }, {
-"frames": [ SubResource( 20 ) ],
-"loop": true,
-"name": "Dash",
-"speed": 5.0
-}, {
 "frames": [ SubResource( 14 ), SubResource( 15 ) ],
 "loop": true,
 "name": "Hurt",
 "speed": 13.0
+}, {
+"frames": [ SubResource( 20 ) ],
+"loop": true,
+"name": "Dash",
+"speed": 5.0
 }, {
 "frames": [ SubResource( 10 ), SubResource( 11 ), SubResource( 12 ), SubResource( 13 ) ],
 "loop": false,
@@ -160,11 +167,6 @@ animations = [ {
 "frames": [ SubResource( 5 ) ],
 "loop": true,
 "name": "Fall",
-"speed": 5.0
-}, {
-"frames": [ SubResource( 38 ) ],
-"loop": true,
-"name": "Throw",
 "speed": 5.0
 } ]
 
@@ -332,7 +334,7 @@ func enter_state() -> void:
 func _attack_effect() -> void:
 	for body in $AnimatedSprite/HitBox.get_overlapping_bodies():
 		if body is Enemy:
-			body.hurt()
+			body.hurt($AnimatedSprite/HitBox.get_global_position())
 
 #### INPUTS ####
 
@@ -425,9 +427,13 @@ toggle_state_mode = true
 stream = ExtResource( 14 )
 volume_db = -6.0
 
-[node name="Hurt" type="Node" parent="StatesMachine" index="5"]
-script = ExtResource( 2 )
+[node name="Hurt" type="Node2D" parent="StatesMachine" index="5"]
+script = ExtResource( 17 )
 toggle_state_mode = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer2D" parent="StatesMachine/Hurt" index="0"]
+stream = ExtResource( 16 )
+pitch_scale = 1.05
 
 [node name="Dash" type="Node2D" parent="StatesMachine" index="6"]
 script = SubResource( 24 )
@@ -451,7 +457,7 @@ texture = ExtResource( 8 )
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer2D" parent="StatesMachine/Dash" index="3"]
 stream = ExtResource( 15 )
-volume_db = 3.0
+volume_db = -6.0
 
 [node name="WallGrab" type="Node" parent="StatesMachine" index="7"]
 script = SubResource( 25 )

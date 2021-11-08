@@ -71,7 +71,7 @@ func _ready() -> void:
 func get_enemies_count() -> int:
 	var counter = 0
 	for child in $Navigation2D.get_children():
-		if child is Enemy && child.get_behaviour_state_name() != "Dead":
+		if child is Enemy && child.hp != 0:
 			counter += 1
 	return counter
 
@@ -103,7 +103,6 @@ func new_wave() -> void:
 		var enemy = enemy_scene.instance()
 		
 		spawner.spawn(enemy)
-
 
 
 func _sum_prob(enemy_prob_array: Array) -> float:
@@ -149,7 +148,8 @@ func _on_EVENTS_enemy_killed(_points: int) -> void:
 	if current_difficulty == null:
 		return
 	
-	if get_enemies_count() == 0:
+	var nb_enemies = get_enemies_count()
+	if nb_enemies == 0:
 		if wave_counter >= current_difficulty.nb_waves:
 			EVENTS.emit_signal("difficulty_finished")
 		else:

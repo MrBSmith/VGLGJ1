@@ -36,15 +36,19 @@ func is_state(value: String) -> bool: return get_state_name() == value
 func _ready() -> void:
 	var __ = connect("hp_changed", self, "_on_hp_changed")
 
+
 #### VIRTUALS ####
 
 
 
 #### LOGIC ####
 
-func hurt() -> void:
+func hurt(impact_pos: Vector2) -> void:
 	set_state("Hurt")
 	set_hp(hp - 1)
+	var dir = -get_global_position().direction_to(impact_pos)
+	
+	set_velocity(dir * 200.0)
 	
 	if !is_instance_valid(animated_sprite) or !is_instance_valid(tween):
 		return
@@ -80,3 +84,5 @@ func _attack() -> void:
 func _on_hp_changed() -> void:
 	if hp <= 0:
 		die()
+
+
