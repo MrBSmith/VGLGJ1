@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/Bounce.wav-046b46170ef319f3392a323a604b9869.sample"
+
+[deps]
+
+source_file="res://Scene/Actors/Character/Sounds/Bounce.wav"
+dest_files=[ "res://.import/Bounce.wav-046b46170ef319f3392a323a604b9869.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

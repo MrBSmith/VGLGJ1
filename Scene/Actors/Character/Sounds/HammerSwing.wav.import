@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/HammerSwing.wav-c423a45899468dbf16b6c14e46e15af0.sample"
+
+[deps]
+
+source_file="res://Scene/Actors/Character/Sounds/HammerSwing.wav"
+dest_files=[ "res://.import/HammerSwing.wav-c423a45899468dbf16b6c14e46e15af0.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

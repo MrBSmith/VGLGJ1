@@ -14,7 +14,6 @@ func exit_state() -> void:
 		return
 	
 	.enter_state()
-	owner.set_collision_mask(0)
 
 
 #### LOGIC ####

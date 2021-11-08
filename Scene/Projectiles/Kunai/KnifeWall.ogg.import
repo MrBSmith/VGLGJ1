@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/KnifeWall.ogg-8b9b2557c006e8872bd1dea4a2207bb6.oggstr"
+
+[deps]
+
+source_file="res://Scene/Projectiles/Kunai/KnifeWall.ogg"
+dest_files=[ "res://.import/KnifeWall.ogg-8b9b2557c006e8872bd1dea4a2207bb6.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0

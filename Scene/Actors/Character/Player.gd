@@ -53,7 +53,8 @@ func set_nb_kunai(value: int) -> void:
 
 func _ready() -> void:
 	var __ = EVENTS.connect("collect_kunai", self, "_on_EVENTS_collect_kunai")
-
+	
+	animated_sprite.material.set_shader_param("mix_amount", 0.0)
 
 func _physics_process(delta: float) -> void:
 	if is_state("Hurt"):
@@ -71,7 +72,7 @@ func _physics_process(delta: float) -> void:
 		_compute_velocity()
 		set_velocity(move_and_slide(velocity, Vector2.UP, true, 4, deg2rad(1), false))
 		
-		if !is_state("Attack") && !is_state("Die"):
+		if !is_state("Attack") && !is_state("Die") && !is_state("Throw"):
 			update_state()
 
 
@@ -163,9 +164,12 @@ func _throw_kunai() -> void:
 	if nb_kunai <= 0:
 		return
 	
+	set_state("Throw")
+	
 	var mouse_pos = get_local_mouse_position()
+	var dir = mouse_pos.normalized()
 	set_nb_kunai(nb_kunai - 1)
-	EVENTS.emit_signal("spawn_projectile", "Kunai", position, mouse_pos.normalized())
+	EVENTS.emit_signal("spawn_projectile", "Kunai", position + dir * 5.0, dir)
 
 
 func is_near_wall() -> bool:

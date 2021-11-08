@@ -19,6 +19,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if is_state("Fall"):
 		velocity.y += gravity
+		rotation_degrees += 10
 	else:
 		velocity = direction * speed
 	

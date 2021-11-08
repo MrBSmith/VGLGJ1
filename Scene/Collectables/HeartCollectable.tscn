@@ -64,6 +64,9 @@ collision_layer = 0
 [node name="CollisionShape2D" parent="InteractArea" index="0"]
 shape = SubResource( 11 )
 
+[node name="CollectSound" parent="." index="3"]
+volume_db = -6.0
+
 [node name="AnimatedSprite" type="AnimatedSprite" parent="." index="4"]
 frames = SubResource( 5 )
 animation = "Idle"

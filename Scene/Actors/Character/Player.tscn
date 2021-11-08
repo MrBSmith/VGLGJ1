@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=2]
+[gd_scene load_steps=53 format=2]
 
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateLabel.gd" type="Script" id=1]
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/AbstractStates/AnimatedObjectStateBase.gd" type="Script" id=2]
@@ -11,6 +11,10 @@
 [ext_resource path="res://Scene/Actors/Character/Sprites/Perso_Dash_Left.png" type="Texture" id=9]
 [ext_resource path="res://Scene/Actors/Flash.gdshader" type="Shader" id=10]
 [ext_resource path="res://Scene/Actors/Actor.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Scene/Actors/Character/Sounds/HammerSwing.wav" type="AudioStream" id=12]
+[ext_resource path="res://Scene/Actors/Character/Sounds/Bounce.wav" type="AudioStream" id=13]
+[ext_resource path="res://Scene/Projectiles/Kunai/KnifeThrown.ogg" type="AudioStream" id=14]
+[ext_resource path="res://Scene/Actors/Character/Sounds/Dash.ogg" type="AudioStream" id=15]
 
 [sub_resource type="ShaderMaterial" id=37]
 shader = ExtResource( 10 )
@@ -97,6 +101,10 @@ region = Rect2( 64, 32, 16, 16 )
 atlas = ExtResource( 6 )
 region = Rect2( 0, 16, 16, 16 )
 
+[sub_resource type="AtlasTexture" id=38]
+atlas = ExtResource( 6 )
+region = Rect2( 16, 48, 16, 16 )
+
 [sub_resource type="SpriteFrames" id=21]
 animations = [ {
 "frames": [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 2 ) ],
@@ -152,6 +160,11 @@ animations = [ {
 "frames": [ SubResource( 5 ) ],
 "loop": true,
 "name": "Fall",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 38 ) ],
+"loop": true,
+"name": "Throw",
 "speed": 5.0
 } ]
 
@@ -372,7 +385,7 @@ max_hp = 3
 [node name="AnimatedSprite" type="AnimatedSprite" parent="." index="1"]
 material = SubResource( 37 )
 frames = SubResource( 21 )
-animation = "Idle"
+animation = "Throw"
 __meta__ = {
 "_edit_lock_": true
 }
@@ -393,17 +406,30 @@ script = ExtResource( 7 )
 [node name="Move" type="Node" parent="StatesMachine" index="1"]
 script = SubResource( 23 )
 
-[node name="Jump" type="Node" parent="StatesMachine" index="2"]
+[node name="Jump" type="Node2D" parent="StatesMachine" index="2"]
 script = ExtResource( 2 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer2D" parent="StatesMachine/Jump" index="0"]
+stream = ExtResource( 13 )
+volume_db = -9.0
+pitch_scale = 2.0
 
 [node name="Fall" type="Node" parent="StatesMachine" index="3"]
 script = ExtResource( 2 )
 
-[node name="Hurt" type="Node" parent="StatesMachine" index="4"]
+[node name="Throw" type="Node2D" parent="StatesMachine" index="4"]
 script = ExtResource( 2 )
 toggle_state_mode = true
 
-[node name="Dash" type="Node2D" parent="StatesMachine" index="5"]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer2D" parent="StatesMachine/Throw" index="0"]
+stream = ExtResource( 14 )
+volume_db = -6.0
+
+[node name="Hurt" type="Node" parent="StatesMachine" index="5"]
+script = ExtResource( 2 )
+toggle_state_mode = true
+
+[node name="Dash" type="Node2D" parent="StatesMachine" index="6"]
 script = SubResource( 24 )
 right_particule = ExtResource( 8 )
 left_particule = ExtResource( 9 )
@@ -423,10 +449,14 @@ local_coords = false
 process_material = SubResource( 36 )
 texture = ExtResource( 8 )
 
-[node name="WallGrab" type="Node" parent="StatesMachine" index="6"]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer2D" parent="StatesMachine/Dash" index="3"]
+stream = ExtResource( 15 )
+volume_db = 3.0
+
+[node name="WallGrab" type="Node" parent="StatesMachine" index="7"]
 script = SubResource( 25 )
 
-[node name="Attack" type="Node2D" parent="StatesMachine" index="7"]
+[node name="Attack" type="Node2D" parent="StatesMachine" index="8"]
 script = SubResource( 26 )
 toggle_state_mode = true
 
@@ -444,10 +474,16 @@ collision_mask = 4
 position = Vector2( 14.6391, -0.0262642 )
 shape = SubResource( 31 )
 
-[node name="Die" type="Node" parent="StatesMachine" index="8"]
+[node name="AudioStreamPlayer" type="AudioStreamPlayer2D" parent="StatesMachine/Attack" index="1"]
+stream = ExtResource( 12 )
+volume_db = -6.0
+pitch_scale = 1.3
+
+[node name="Die" type="Node" parent="StatesMachine" index="9"]
 script = ExtResource( 2 )
 
-[node name="StateLabel" type="Label" parent="StatesMachine" index="9"]
+[node name="StateLabel" type="Label" parent="StatesMachine" index="10"]
+visible = false
 margin_left = -20.0409
 margin_top = -27.1842
 margin_right = 19.9591

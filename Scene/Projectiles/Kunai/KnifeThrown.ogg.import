@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/KnifeThrown.ogg-be4fb424e4b26c9f375599a8c31c5307.oggstr"
+
+[deps]
+
+source_file="res://Scene/Projectiles/Kunai/KnifeThrown.ogg"
+dest_files=[ "res://.import/KnifeThrown.ogg-be4fb424e4b26c9f375599a8c31c5307.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0

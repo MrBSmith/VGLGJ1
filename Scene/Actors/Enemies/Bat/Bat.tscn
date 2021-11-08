@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=2]
+[gd_scene load_steps=34 format=2]
 
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateLabel.gd" type="Script" id=1]
 [ext_resource path="res://BabaGodotLib/Absract/StateMachine/StateMachine.gd" type="Script" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://Scene/Actors/Enemies/Bat/bat_SpriteSheet.png" type="Texture" id=7]
 [ext_resource path="res://Scene/Actors/Enemies/Bat/BatAttackState.gd" type="Script" id=8]
 [ext_resource path="res://Scene/Actors/Enemies/EnemiesHurtState.gd" type="Script" id=9]
+[ext_resource path="res://Scene/Actors/Enemies/Bat/Sounds/BatDying.ogg" type="AudioStream" id=10]
 
 [sub_resource type="Shader" id=19]
 resource_local_to_scene = true
@@ -294,8 +295,13 @@ script = ExtResource( 5 )
 [node name="Attack" type="Node" parent="StatesMachine" index="2"]
 script = ExtResource( 5 )
 
-[node name="Hurt" type="Node" parent="StatesMachine" index="3"]
+[node name="Hurt" type="Node2D" parent="StatesMachine" index="3"]
 script = ExtResource( 9 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer2D" parent="StatesMachine/Hurt" index="0"]
+stream = ExtResource( 10 )
+volume_db = -23.0
+pitch_scale = 0.9
 
 [node name="Fall" type="Node" parent="StatesMachine" index="4"]
 script = ExtResource( 5 )
